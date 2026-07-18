@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { GraduationCap, Menu, X, Sun, Moon } from "lucide-react";
-
+import Logo from "../../assets/Logo.png";
 
 
 const Header = ({
@@ -33,7 +33,7 @@ const Header = ({
           >
             <div className="w-15 h-15 rounded-lg flex items-center justify-center text-white group-hover:rotate-12 transition-transform">
               <img
-                src="/src/assets/Logo.png"
+            src={Logo}
                 alt="School Logo"
                 className="w-14 h-14 object-contain rounded-full"
               />
