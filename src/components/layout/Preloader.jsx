@@ -1,12 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
-
+import Logo from "../../assets/Logo.png";
 const Preloader = () => {
   return (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white dark:bg-slate-950">
       {/* ROUND LOGO */}
       <motion.img
-        src="/src/assets/Logo.png"
+                src={Logo}
         alt="School Logo"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{
