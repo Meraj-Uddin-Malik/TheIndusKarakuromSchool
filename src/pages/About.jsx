@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import * as Icons from 'lucide-react';
 
 import bgImage from "../assets/Books.jpeg";
-import Principal from "../assets/principal.jpeg";
+import Principal from "../assets/Principal.jpeg";
 
 const { Fingerprint, Activity, ShieldCheck, Zap, Orbit, Quote } = Icons;
 
