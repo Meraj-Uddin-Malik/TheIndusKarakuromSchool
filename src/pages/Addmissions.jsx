@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import * as Icons from 'lucide-react';
 
-import Principal from "../assets/principal.jpeg";
+import Principal from "../assets/Principal.jpeg";
 
 // Safe destructuring of icons with fallbacks to avoid undefined errors
 const { 
