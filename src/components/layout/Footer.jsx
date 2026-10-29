@@ -1,82 +1,151 @@
-import React from "react";
-import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
-import { MdMail, MdPhone, MdLocationOn } from "react-icons/md";
-import { GiGraduateCap } from "react-icons/gi";
+import { ArrowUpRight, MapPin, Mail, ArrowUp } from "lucide-react";
+import schoolLogo from "../../assets/Logo.png";
+
+const navigation = [
+  { label: "Home", href: "#home" },
+  { label: "About School", href: "#about" },
+  { label: "Academics", href: "#academics" },
+  { label: "Admissions", href: "#admissions" },
+  { label: "Faculty", href: "#faculty" },
+  { label: "Gallery", href: "#gallery" },
+];
 
 const Footer = () => {
+  const year = new Date().getFullYear();
+
+  const goToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <footer className="bg-slate-50 dark:bg-slate-950 border-t pt-16 pb-10">
+    <footer className="relative overflow-hidden border-t border-slate-200 bg-slate-50 text-slate-900 dark:border-white/10 dark:bg-[#0B1527] dark:text-white">
+      <div className="pointer-events-none absolute -right-40 top-0 h-96 w-96 rounded-full bg-blue-500/5 blur-3xl" />
 
-      <div className="max-w-6xl mx-auto px-6">
-
-        {/* GRID */}
-        <div className="grid md:grid-cols-3 gap-10 mb-12">
-
-          {/* BRAND */}
+      <div className="relative mx-auto max-w-7xl px-6">
+        {/* INTRO */}
+        <div className="grid gap-10 border-b border-slate-200 py-14 dark:border-white/10 md:grid-cols-[1.2fr_0.8fr] lg:py-20">
           <div>
-            <div className="flex items-center gap-3 font-black text-xl mb-4">
-              <GiGraduateCap className="text-blue-600 text-2xl" />
-              TIKSchool
+            <div className="flex items-center gap-3">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center">
+                <img
+                  src={schoolLogo}
+                  alt="The Indus Karakuram School logo"
+                  className="h-full w-full object-contain"
+                />
+              </div>
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.08em] sm:text-base">
+                  The Indus Karakuram School
+                </p>
+                <p className="mt-1 text-xs tracking-wide text-slate-500 dark:text-slate-400">
+                  Karachi, Pakistan
+                </p>
+              </div>
             </div>
 
-            <p className="text-sm text-gray-500">
-              Excellence in education since 2020. Building future leaders.
+            <h2 className="mt-8 max-w-xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+              A strong foundation
+              <span className="block font-serif font-normal italic text-blue-600 dark:text-blue-400">
+                for every learner.
+              </span>
+            </h2>
+          </div>
+
+          <div className="flex flex-col justify-end md:items-end">
+            <p className="max-w-sm text-sm leading-7 text-slate-600 dark:text-slate-400">
+              Explore our school, learn about admissions, and
+              find the information you need to take the next step.
             </p>
+            <a
+              href="#contact"
+              className="mt-6 inline-flex w-fit items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+            >
+              Contact the School <ArrowUpRight size={17} />
+            </a>
+          </div>
+        </div>
 
-            {/* SOCIAL */}
-            <div className="flex gap-4 mt-4 text-xl text-gray-500">
-              <FaInstagram className="hover:text-blue-600 cursor-pointer" />
-              <FaTwitter className="hover:text-blue-600 cursor-pointer" />
-              <FaYoutube className="hover:text-blue-600 cursor-pointer" />
+        {/* LINKS */}
+        <div className="grid gap-10 border-b border-slate-200 py-12 dark:border-white/10 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr] lg:gap-16 lg:py-16">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
+              Our School
+            </p>
+            <p className="mt-5 max-w-xs text-sm leading-7 text-slate-600 dark:text-slate-400">
+              The Indus Karakuram School supports learning
+              from the early years through secondary education.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-bold">Explore</h3>
+            <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-4">
+              {navigation.map((item) => (
+                <li key={item.label}>
+                  <a
+                    href={item.href}
+                    className="text-sm text-slate-600 transition hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-bold">Get in Touch</h3>
+            <div className="mt-5 space-y-5">
+              <div className="flex items-start gap-3">
+                <MapPin size={19} className="mt-0.5 shrink-0 text-blue-600 dark:text-blue-400" />
+                <div>
+                  <p className="text-sm font-medium">Karachi, Pakistan</p>
+                  <a
+                    href="https://www.google.com/maps?daddr=9%2C%20Naval%20Colony%2C%20Karachi%2C%2075760"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-flex items-center gap-1 text-xs text-slate-500 transition hover:text-blue-600 dark:text-slate-400"
+                  >
+                    View directions <ArrowUpRight size={13} />
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Mail size={19} className="mt-0.5 shrink-0 text-blue-600 dark:text-blue-400" />
+                <div>
+                  <p className="text-sm font-medium">Have a question?</p>
+                  <a
+                    href="#contact"
+                    className="mt-1 inline-block text-xs text-slate-500 transition hover:text-blue-600 dark:text-slate-400"
+                  >
+                    Visit our Contact page
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* LINKS */}
-          <div>
-            <h3 className="font-bold text-blue-600 mb-4 text-sm uppercase">
-              Institute
-            </h3>
-
-            <ul className="space-y-3 text-sm text-gray-500">
-              <li className="hover:text-blue-600 cursor-pointer">Vision</li>
-              <li className="hover:text-blue-600 cursor-pointer">Admissions</li>
-              <li className="hover:text-blue-600 cursor-pointer">Academics</li>
-            </ul>
-          </div>
-
-          {/* CONTACT */}
-          <div>
-            <h3 className="font-bold text-blue-600 mb-4 text-sm uppercase">
-              Contact
-            </h3>
-
-            <ul className="space-y-3 text-sm text-gray-500">
-
-              <li className="flex items-center gap-2">
-                <MdLocationOn className="text-blue-600" />
-                TIKSchools City Campus
-              </li>
-
-              <li className="flex items-center gap-2">
-                <MdPhone className="text-blue-600" />
-                +92 300 1234567
-              </li>
-
-              <li className="flex items-center gap-2">
-                <MdMail className="text-blue-600" />
-                support@tikschool.com
-              </li>
-
-            </ul>
-          </div>
-
         </div>
 
-        {/* BOTTOM */}
-        <div className="border-t pt-6 text-center text-xs text-gray-500">
-          © 2026 TIKSchools. All rights reserved.
-        </div>
+        {/* COPYRIGHT */}
+        <div className="flex flex-col gap-5 py-7 text-xs text-slate-500 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {year} The Indus Karakuram School. All rights reserved.
+          </p>
 
+          <div className="flex items-center justify-between gap-6 sm:justify-end">
+            <span>Education • Community • Growth</span>
+            <button
+              type="button"
+              onClick={goToTop}
+              aria-label="Back to top"
+              title="Back to top"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-700 transition hover:border-blue-500 hover:bg-blue-600 hover:text-white dark:border-white/10 dark:text-slate-300"
+            >
+              <ArrowUp size={17} />
+            </button>
+          </div>
+        </div>
       </div>
     </footer>
   );

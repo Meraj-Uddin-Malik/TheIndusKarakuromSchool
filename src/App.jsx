@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll } from "framer-motion";
+
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Layout Components
 import Preloader from "./components/layout/Preloader";
@@ -12,109 +13,131 @@ import About from "./pages/About";
 import Admissions from "./pages/Addmissions";
 import Curriculam from "./pages/Curriculam";
 import Faculty from "./pages/Faculty";
-import Events from "./pages/Events";
-import Gallery from "./pages/Gallary";
+import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
 
+// Navigation
+const navLinks = [
+  { id: "home", label: "Home" },
+  { id: "about", label: "About" },
+  { id: "curriculam", label: "Academics" },
+  { id: "faculty", label: "Faculty" },
+  { id: "gallery", label: "Gallery" },
+  { id: "contact", label: "Contact" },
+  { id: "admissions", label: "Admissions" },
+];
 
 export default function App() {
-  // --- Global State ---
+  // Application states
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState("home");
-  
-  // --- UI State for Premium Interactions ---
-  const [theme, setTheme] = useState("dark"); // Defaulting to the cinematic dark theme
+
+
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Global Scroll Progress for the bottom progress bar
-  const { scrollYProgress } = useScroll();
 
-  // Navigation Links (Centralized so Header & Mobile Overlay share them)
-  const navLinks = [
-    { id: 'home', label: 'Home' },
-    { id: 'about', label: 'Vision' },
-    { id: 'admissions', label: 'Enroll' },
-    { id: 'curriculam', label: 'Curriculum' },
-    { id: 'faculty', label: 'Faculty' },
-    { id: 'events', label: 'Events' },
-    { id: 'gallery', label: 'Gallery' },
-    { id: 'contact', label: 'Contact' },
-    { id: 'portal', label: 'Portal', isAction: true },
-  ];
-
-  // --- Effects ---
-
-  // 1. Initial Preloader
+  // Preloader
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setLoading(false);
-    }, 2500); // Slightly longer for the cinematic effect
-    return () => clearTimeout(timer);
+    }, 2500);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
-  // 2. Dynamic Island Header Scroll Listener
+
+  // Scroll detection
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
-  // 3. Reset UI on Page Change
+  // Reset scroll after navigation
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setIsMenuOpen(false); // Close mobile menu if open
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+
   }, [page]);
 
+  // Navigate and close mobile menu
+  const navigateToPage = (nextPage) => {
+    setPage(nextPage);
+    setIsMenuOpen(false);
+  };
 
-  // --- Routing ---
   const renderPage = () => {
     switch (page) {
-      case "home": return <Home setPage={setPage} />;
-      case "about": return <About setPage={setPage} />;
-      case "admissions": return <Admissions setPage={setPage} />;
-      case "curriculam": return <Curriculam setPage={setPage} />;
-      case "faculty": return <Faculty setPage={setPage} />;
-      case "events": return <Events setPage={setPage} />;
-      case "gallery": return <Gallery setPage={setPage} />;
-      case "contact": return <Contact setPage={setPage} />;
-      default: return <Home setPage={setPage} />;
+      case "home":
+        return <Home setPage={navigateToPage} />;
+
+      case "about":
+        return <About setPage={navigateToPage} />;
+
+      case "admissions":
+        return <Admissions setPage={navigateToPage} />;
+
+      case "curriculam":
+        return <Curriculam setPage={navigateToPage} />;
+
+      case "faculty":
+        return <Faculty setPage={navigateToPage} />;
+
+      case "gallery":
+        return <Gallery setPage={navigateToPage} />;
+
+      case "contact":
+        return <Contact setPage={navigateToPage} />;
+
+      default:
+        return <Home setPage={navigateToPage} />;
     }
   };
 
   return (
-    // The main wrapper controls the Dark/Light mode class
-    <div className={theme}>
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-500 font-sans selection:bg-blue-600 selection:text-white">
-        
-        {/* Preloader is wrapped in AnimatePresence so it fades out smoothly */}
+    <div className="dark">
+      <div className="min-h-screen bg-slate-50 font-sans text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
+
+        {/* PRELOADER */}
         <AnimatePresence>
           {loading && <Preloader />}
         </AnimatePresence>
 
         {!loading && (
           <>
-            {/* HEADER (Now handles both Desktop Navbar and Mobile Overlay) */}
-            <Header 
-              page={page} 
-              setPage={setPage} 
-              theme={theme} 
-              setTheme={setTheme} 
-              scrolled={scrolled} 
-              isMenuOpen={isMenuOpen} 
-              setIsMenuOpen={setIsMenuOpen} 
+            {/* HEADER */}
+            <Header
+              page={page}
+              setPage={navigateToPage}
+
+              scrolled={scrolled}
+              isMenuOpen={isMenuOpen}
+              setIsMenuOpen={setIsMenuOpen}
               navLinks={navLinks}
             />
 
-            {/* PAGE CONTENT WITH SMOOTH ROUTING TRANSITIONS */}
+            {/* PAGE CONTENT */}
             <main className="min-h-screen">
               <AnimatePresence mode="wait">
-                <motion.div 
-                  key={page} 
-                  initial={{ opacity: 0, y: 20 }} 
-                  animate={{ opacity: 1, y: 0 }} 
-                  exit={{ opacity: 0, y: -20 }} 
-                  transition={{ duration: 0.4 }}
+                <motion.div
+                  key={page}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.3 }}
                 >
                   {renderPage()}
                 </motion.div>
@@ -123,12 +146,6 @@ export default function App() {
 
             {/* FOOTER */}
             <Footer />
-
-            {/* GLOBAL SCROLL PROGRESS BAR (Bottom of screen) */}
-            <motion.div 
-              className="fixed bottom-0 left-0 right-0 h-1 bg-blue-600 origin-left z-50" 
-              style={{ scaleX: scrollYProgress }} 
-            />
           </>
         )}
       </div>

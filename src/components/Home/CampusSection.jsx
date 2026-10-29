@@ -1,103 +1,128 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Play, X, ArrowRight } from "lucide-react"; // Added ArrowRight
+
+import { motion, useReducedMotion } from "framer-motion";
+import { Images } from "lucide-react";
+import CampusImage from "../../assets/Tiks.jpeg";
+
+const campusPhotos = [
+  {
+    src: CampusImage,
+    alt: "The Indus Karakuram School building",
+    label: "Our Campus",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=85",
+    alt: "Illustrative classroom photograph",
+    label: "Learning Spaces",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=85",
+    alt: "Illustrative library photograph",
+    label: "Reading & Discovery",
+  },
+];
 
 const CampusSection = ({ setPage }) => {
-  const [isVideoOpen, setIsVideoOpen] = useState(false);
-  
-  // Replace this with your actual YouTube Video ID
-  const youtubeVideoId = "L9SZIMZN-7M"; 
+  const reduceMotion = useReducedMotion();
 
   return (
-    <section className="container mx-auto px-6 py-10 pt-20">
-      
-      {/* --- NEW PREMIUM HEADING SECTION --- */}
-      <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-        <div className="max-w-2xl">
-          <span className="text-blue-600 dark:text-blue-400 font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">
-            Campus Life
-          </span>
-          <h2 className="text-6xl md:text-6xl font-black tracking-tighter text-slate-900 dark:text-white">
-            Explore The TIKSchool.
-          </h2>
-        </div>
-        
-        {/* Optional: You can route this button to a Gallery or About page */}
-        <button 
-          onClick={() => setPage && setPage('gallery')}
-          className="flex items-center gap-2 font-black uppercase tracking-widest text-xs text-slate-500 hover:text-blue-600 transition-colors"
-        >
-          View Full Gallery <ArrowRight size={16} />
-        </button>
-      </div>
+    <section className="relative bg-transparent px-5 py-16 sm:px-6 lg:py-24">
+      <div className="mx-auto max-w-7xl">
 
-      {/* --- CINEMATIC FACADE --- */}
-      <motion.div 
-        initial={{ opacity: 0, y: 40 }} 
-        whileInView={{ opacity: 1, y: 0 }} 
-        viewport={{ once: true }}
-        onClick={() => setIsVideoOpen(true)} 
-        className="relative w-full rounded-[3rem] overflow-hidden aspect-video md:aspect-[21/9] shadow-2xl group cursor-pointer"
-      >
-        {/* Background Image */}
-        <div className="absolute inset-0 bg-slate-900">
-          <img 
-            src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?q=80&w=2000&auto=format&fit=crop" 
-            alt="" 
-            className="w-full h-full object-cover opacity-60 group-hover:scale-105 group-hover:opacity-40 transition-all duration-700"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        </div>
+        <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">
+              Discover Our Campus
+            </span>
 
-        {/* Play Button & Main Title */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10">
-          <div className="w-24 h-24 bg-blue-600/90 backdrop-blur-md rounded-full flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-500 transition-all duration-300 shadow-[0_0_30px_rgba(37,99,235,0.5)]">
-            <Play size={40} className="ml-2 text-white fill-white" />
+            <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+              A Place to{" "}
+              <span className="text-blue-700 dark:text-blue-200">
+                Learn & Grow.
+              </span>
+            </h2>
+
+            <p className="mt-5 max-w-xl text-base leading-8 text-slate-600 dark:text-slate-300">
+              Explore the spaces that support
+              learning, curiosity, and personal growth.
+            </p>
           </div>
-          <h3 className="text-3xl md:text-5xl font-black tracking-tighter transition-transform duration-500 group-hover:-translate-y-2">
-            Campus Cinematic
-          </h3>
-        </div>
-      </motion.div>
 
-      {/* --- FULL-SCREEN YOUTUBE MODAL --- */}
-      <AnimatePresence>
-        {isVideoOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xl p-4 md:p-12"
-          >
-            {/* Close Button */}
+          {typeof setPage === "function" && (
             <button
-              onClick={() => setIsVideoOpen(false)}
-              className="absolute top-8 right-8 md:top-12 md:right-12 text-white/50 hover:text-white bg-white/10 hover:bg-white/20 p-4 rounded-full transition-all z-10"
+              type="button"
+              onClick={() => setPage("gallery")}
+              className="inline-flex w-fit items-center gap-3 rounded-lg border border-slate-300 dark:border-[#526A87] bg-white dark:bg-[#041225] px-6 py-3.5 text-sm font-semibold text-slate-900 dark:text-white transition-colors hover:bg-slate-100 dark:hover:bg-[#091C36]"
             >
-              <X size={32} />
+              <Images size={18} />
+              Explore Gallery
             </button>
+          )}
+        </div>
 
-            {/* Video Container */}
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="w-full max-w-6xl aspect-video rounded-3xl overflow-hidden bg-black shadow-[0_0_100px_rgba(37,99,235,0.2)] border border-white/10 relative"
-            >
-              <iframe
-                src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&rel=0&modestbranding=1`}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-              ></iframe>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        <div className="grid gap-4 md:h-[520px] md:grid-cols-[1.65fr_1fr]">
 
+          <motion.figure
+            initial={
+              reduceMotion ? false : { opacity: 0, y: 20 }
+            }
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55 }}
+            className="group relative h-[340px] overflow-hidden rounded-2xl border border-slate-200 dark:border-[#526A87]/50 bg-white dark:bg-[#041225] md:h-full"
+          >
+            <img
+              src={campusPhotos[0].src}
+              alt={campusPhotos[0].alt}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-t from-[#041225]/90 via-transparent to-transparent" />
+
+            <figcaption className="absolute bottom-6 left-6 text-xl font-bold text-slate-900 dark:text-white">
+              {campusPhotos[0].label}
+            </figcaption>
+          </motion.figure>
+
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-1 md:grid-rows-2">
+            {campusPhotos.slice(1).map((photo, index) => (
+              <motion.figure
+                key={photo.label}
+                initial={
+                  reduceMotion
+                    ? false
+                    : { opacity: 0, y: 20 }
+                }
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.55,
+                  delay: reduceMotion ? 0 : index * 0.1,
+                }}
+                className="group relative h-[220px] overflow-hidden rounded-2xl border border-slate-200 dark:border-[#526A87]/50 bg-white dark:bg-[#041225] sm:h-[240px] md:h-full"
+              >
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-[#041225]/90 via-transparent to-transparent" />
+
+                <figcaption className="absolute bottom-5 left-5 text-lg font-bold text-slate-900 dark:text-white">
+                  {photo.label}
+                </figcaption>
+              </motion.figure>
+            ))}
+          </div>
+        </div>
+
+        <p className="mt-4 text-xs text-slate-600 dark:text-slate-300">
+          Classroom and library photographs are temporary
+          placeholders until actual school images are added.
+        </p>
+      </div>
     </section>
   );
 };

@@ -6,3 +6,39 @@ body {
   @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-white;
   font-family: ui-sans-serif, system-ui;
 }
+
+/* TIKS Global Responsive Overflow Fix */
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+body, #root {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+img, video, canvas, svg {
+  max-width: 100%;
+}
+
+img, video {
+  height: auto;
+}
+
+main, section, article, header, footer {
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  h1, h2, h3, p {
+    overflow-wrap: break-word;
+  }
+}

@@ -1,41 +1,65 @@
-const AboutPreview = () => (
-  <section className="container mx-auto px-6">
-    <div className="grid md:grid-cols-2 gap-16 items-center">
-      
-      {/* Image */}
-      <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-        <img 
-          src="https://media.istockphoto.com/id/1462063082/photo/hispanic-school-children-enjoying-books-in-library.jpg?s=612x612&w=0&k=20&c=jVkcaGNr-Ga3wJzU8bIO9uFqAloP4paI7LRw2wrFRPM=" 
-          alt="Students"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-blue-600/10" />
+
+import { motion, useReducedMotion } from "framer-motion";
+import SchoolImage from "../../assets/Tiks.jpeg";
+
+const AboutPreview = ({ setPage }) => {
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <section className="relative bg-transparent px-5 py-10 sm:px-6 sm:py-16 lg:py-24">
+      <div className="mx-auto max-w-7xl">
+        <motion.div
+          initial={
+            reduceMotion ? false : { opacity: 0, y: 20 }
+          }
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="grid overflow-hidden rounded-3xl border border-slate-200 dark:border-[#526A87]/50 bg-white dark:bg-[#041225] lg:grid-cols-2"
+        >
+          <div className="relative min-h-[210px] overflow-hidden sm:min-h-[320px] lg:min-h-[480px]">
+            <img
+              src={SchoolImage}
+              alt="The Indus Karakuram School building"
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
+
+          <div className="flex flex-col justify-center p-5 sm:p-12 lg:p-14">
+            <span className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">
+              About Our School
+            </span>
+
+            <h2 className="mt-3 text-2xl font-bold sm:mt-5 leading-tight tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+              More Than
+              <span className="block text-blue-700 dark:text-blue-200">
+                A Classroom.
+              </span>
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-300 sm:mt-6 sm:text-base sm:leading-8">
+              At The Indus Karakuram School, we believe
+              education is about more than lessons and
+              textbooks. It is about helping every child
+              discover their abilities, develop strong
+              values, and grow with confidence.
+            </p>
+
+            {typeof setPage === "function" && (
+              <button
+                type="button"
+                onClick={() => setPage("about")}
+                className="mt-6 w-fit rounded-lg sm:mt-8 border border-slate-300 dark:border-[#526A87] bg-white dark:bg-[#041225] px-6 py-3.5 text-sm font-semibold text-slate-900 dark:text-white transition-colors hover:border-blue-300 hover:bg-slate-100 dark:hover:bg-[#091C36]"
+              >
+                Discover Our Story
+              </button>
+            )}
+          </div>
+        </motion.div>
       </div>
-
-      {/* Text */}
-      <div>
-        <span className="text-blue-600 font-bold uppercase tracking-widest text-sm">
-          About Us
-        </span>
-
-        <h2 className="text-4xl font-bold mt-4 mb-6 text-slate-900 dark:text-white">
-          A Legacy of Academic Superiority
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
-          Founded in 2026, TIKSchool has been at the forefront of modern education. 
-          We combine traditional values with cutting-edge technology to provide a holistic learning experience.
-        </p>
-
-        <ul className="space-y-4">
-          <li className="flex items-center gap-3">✔ Globally recognized curriculum</li>
-          <li className="flex items-center gap-3">✔ Educated and passionate faculty</li>
-          <li className="flex items-center gap-3">✔ Environmentally conscious campus</li>
-        </ul>
-      </div>
-
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default AboutPreview;

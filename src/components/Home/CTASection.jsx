@@ -1,44 +1,72 @@
-import "react";
-import { motion } from "framer-motion";
+
+import { motion, useReducedMotion } from "framer-motion";
 import { GraduationCap } from "lucide-react";
-import MagneticButton from "./MagneticButton";
 
 const CTASection = ({ setPage }) => {
+  const reduceMotion = useReducedMotion();
+
   return (
-    <section className="container mx-auto px-6 text-center pt-10 pb-22">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }} 
-        whileInView={{ opacity: 1, scale: 1 }} 
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="max-w-4xl mx-auto space-y-10"
-      >
-        {/* 1. Rotated & Tinted Icon Container */}
-        <div className="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 rotate-12 shadow-sm transition-transform hover:rotate-0 duration-500">
-          <GraduationCap size={40} />
-        </div>
+    <section className="relative bg-transparent px-5 pb-24 pt-16 sm:px-6">
+      <div className="mx-auto max-w-7xl">
+        <motion.div
+          initial={
+            reduceMotion ? false : { opacity: 0, y: 20 }
+          }
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="grid items-center gap-12 rounded-3xl border border-slate-200 dark:border-[#526A87]/60 bg-white dark:bg-[#041225] px-8 py-14 sm:px-12 lg:grid-cols-[1.3fr_0.7fr] lg:px-16 lg:py-20"
+        >
+          <div>
+            <div className="mb-7 flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 dark:bg-[#102B53] text-blue-700 dark:text-blue-200">
+                <GraduationCap size={25} />
+              </div>
 
-        {/* 2. Massive Cinematic Typography */}
-        <h2 className="text-5xl md:text-7xl lg:text-6xl font-black tracking-tighter text-slate-900 dark:text-white leading-[0.9]">
-          READY TO SHAPE <br className="hidden md:block"/>THE FUTURE?
-        </h2>
+              <span className="text-xs font-bold uppercase tracking-[0.14em] text-blue-700 dark:text-blue-300">
+                Your Journey Starts Here
+              </span>
+            </div>
 
-        {/* 3. Supporting Subtext */}
-        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-          Applications for the Fall 2026 cohort are now open. Join the world's most innovative academic community.
-        </p>
+            <h2 className="text-2xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+              A Bright Beginning
+              <span className="block text-blue-700 dark:text-blue-200">
+                Starts With the Right School.
+              </span>
+            </h2>
 
-        {/* 4. Oversized Glowing Magnetic Button */}
-        <div className="flex justify-center pt-0">
-          <MagneticButton 
-            onClick={() => setPage("admissions")}
-            // Added explicit sizing and a custom glow shadow
-            className="bg-blue-600 text-white text-sm px-12 py-6 shadow-[0_0_40px_rgba(37,99,235,0.4)] hover:shadow-[0_0_60px_rgba(37,99,235,0.6)] w-full md:w-auto"
-          >
-            Begin Application
-          </MagneticButton>
-        </div>
-      </motion.div>
+            <p className="mt-6 max-w-xl text-base leading-8 text-slate-600 dark:text-slate-300">
+              Discover an education built around
+              meaningful learning, strong values,
+              and personal growth.
+            </p>
+          </div>
+
+          {typeof setPage === "function" && (
+            <div className="flex flex-col gap-4">
+              <button
+                type="button"
+                onClick={() => setPage("admissions")}
+                className="min-h-[54px] rounded-lg bg-blue-600 px-6 py-4 text-sm font-bold text-white transition-colors hover:bg-blue-700"
+              >
+                Explore Admissions
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPage("contact")}
+                className="min-h-[54px] rounded-lg border border-slate-300 dark:border-[#526A87] bg-white dark:bg-[#041225] px-6 py-4 text-sm font-semibold text-slate-900 dark:text-white transition-colors hover:bg-slate-100 dark:hover:bg-[#091C36]"
+              >
+                Contact Our School
+              </button>
+
+              <p className="mt-2 text-center text-xs leading-6 text-slate-400">
+                Have questions? Our school team can help.
+              </p>
+            </div>
+          )}
+        </motion.div>
+      </div>
     </section>
   );
 };

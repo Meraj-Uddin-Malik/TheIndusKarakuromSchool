@@ -1,387 +1,394 @@
-import React, { useState, useRef } from "react";
-import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
 import {
-  Mail,
-  Phone,
-  MapPin,
-  Send,
-  Globe,
-  Clock,
-  ShieldCheck,
-  Zap,
-  Sparkles,
-  ChevronDown,
-  ArrowUpRight,
-  CheckCircle2,
+  ArrowUpRight, Mail, Phone, MapPin, Clock3,
+  MessageSquareText, Send, CheckCircle2, AlertCircle,
+  School, ArrowRight
 } from "lucide-react";
 
-// --- SHARED UI UTILITIES ---
+// Replace these values only with confirmed school information.
+const schoolContact = {
+  email: "",
+  phone: "",
+  address: "9, Naval Colony, Karachi, 75760",
+  officeHours: "",
+  formspreeEndpoint: "",
+};
 
-const SectionLabel = ({ children }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-blue-600/5 text-blue-600 dark:text-blue-400 text-[9px] font-black uppercase tracking-[0.4em] mb-12 border border-blue-600/10 shadow-sm"
-  >
-    <div className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
-    {children}
-  </motion.div>
-);
+const infoCards = [
+  {
+    label: "Call the School",
+    detail: schoolContact.phone,
+    fallback: "School number to be added",
+    description: "For direct questions about the school.",
+    icon: Phone,
+    href: schoolContact.phone
+      ? `tel:${schoolContact.phone.replace(/\s/g, "")}`
+      : null,
+  },
+  {
+    label: "Email the Office",
+    detail: schoolContact.email,
+    fallback: "Official email to be added",
+    description: "For written inquiries and information.",
+    icon: Mail,
+    href: schoolContact.email
+      ? `mailto:${schoolContact.email}`
+      : null,
+  },
+  {
+    label: "Visit the School",
+    detail: schoolContact.address,
+    fallback: "School address to be confirmed",
+    description: "Contact the office before planning a visit.",
+    icon: MapPin,
+    href: null,
+  },
+];
 
-const Contact = () => {
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: containerRef });
-  const smoothProgress = useSpring(scrollYProgress, {
+const fieldClass =
+  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 dark:border-white/10 dark:bg-[#101E32] dark:text-white dark:placeholder:text-slate-500";
+
+export default function Contact({ setPage }) {
+  const pageRef = useRef(null);
+  const [status, setStatus] = useState("idle");
+  const { scrollYProgress } = useScroll({
+    target: pageRef,
+    offset: ["start start", "end end"],
+  });
+  const progress = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
   });
 
-  const [formState, setFormState] = useState("idle"); // idle, sending, success, error
+  const formConfigured = Boolean(
+    schoolContact.formspreeEndpoint.trim()
+  );
 
-  // --- FORM SUBMISSION LOGIC ---
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setFormState("sending");
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!formConfigured) return;
 
-    const form = e.target;
+    const form = event.currentTarget;
     const data = new FormData(form);
+    setStatus("sending");
 
     try {
-      const response = await fetch("https://formspree.io/f/xyklvvgr", {
-        // REPLACE THIS WITH YOUR FORMSPREE ID
+      const response = await fetch(schoolContact.formspreeEndpoint, {
         method: "POST",
         body: data,
-        headers: {
-          Accept: "application/json",
-        },
+        headers: { Accept: "application/json" },
       });
 
-      if (response.ok) {
-        setFormState("success");
-        form.reset();
-      } else {
-        setFormState("error");
-      }
-    } catch (error) {
-      setFormState("error");
+      if (!response.ok) throw new Error("Submission failed");
+      form.reset();
+      setStatus("success");
+    } catch {
+      setStatus("error");
     }
   };
 
   return (
-    <div
-      ref={containerRef}
-      className="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-1000 selection:bg-blue-600 selection:text-white"
+    <main
+      ref={pageRef}
+      className="min-w-0 overflow-x-clip bg-white text-slate-900 transition-colors dark:bg-[#080F1D] dark:text-white"
     >
-      {/* 1. HERO SECTION */}
-      <section className="relative min-h-[70vh] flex items-center justify-center px-6 overflow-hidden pt-20">
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-30 dark:opacity-20">
-          <svg className="w-full h-full" viewBox="0 0 100 100">
-            <motion.circle
-              cx="50"
-              cy="50"
-              r="40"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="0.05"
-              className="text-blue-600"
-              animate={{ r: [35, 42, 35], opacity: [0.1, 0.2, 0.1] }}
-              transition={{ duration: 8, repeat: Infinity }}
-            />
-          </svg>
-        </div>
+      {/* HERO */}
+      <section className="relative overflow-hidden border-b border-slate-200 bg-slate-50 px-5 pb-16 pt-32 dark:border-white/10 dark:bg-[#0B1527] sm:px-6 lg:pb-20 lg:pt-40">
+        <div className="pointer-events-none absolute -right-24 top-10 h-80 w-80 rounded-full bg-blue-500/10 blur-3xl" />
 
-        <div className="container mx-auto text-center z-10">
-          <SectionLabel>Contact our team</SectionLabel>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+        <div className="relative mx-auto grid max-w-7xl items-end gap-10 lg:grid-cols-[1.3fr_0.7fr]">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] mb-10"
+            transition={{ duration: 0.6 }}
           >
-            GET IN <br />
-            <span className="text-blue-600 italic font-serif opacity-80">
-              TOUCH.
-            </span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-slate-500 dark:text-slate-400 max-w-xl mx-auto font-medium"
-          >
-            Have questions about admissions or our programs? We're here to
-            provide the information you need.
-          </motion.p>
-        </div>
-      </section>
+            <div className="mb-6 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
+              <span className="h-px w-8 bg-blue-500" />
+              Contact The Indus Karakuram School
+            </div>
 
-      {/* 2. CONTACT INFO CARDS */}
-      <section className="container mx-auto px-6 py-12">
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            {
-              label: "Email Us",
-              val: "info@eia-nexus.edu",
-              icon: Mail,
-              desc: "For general inquiries and admissions support.",
-            },
-            {
-              label: "Call Us",
-              val: "+1 (555) 000-1234",
-              icon: Phone,
-              desc: "Available Monday to Friday, 8am – 5pm.",
-            },
-            {
-              label: "Visit Us",
-              val: "Innovation Way, City Center",
-              icon: MapPin,
-              desc: "Schedule a campus tour via the form below.",
-            },
-          ].map((node, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ y: -5 }}
-              className="p-10 rounded-[2.5rem] bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-white/5 transition-all duration-300"
+            <h1 className="text-2xl font-bold leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">
+              We're Here
+              <span className="block font-serif font-normal italic text-blue-600 dark:text-blue-400">
+                to Help.
+              </span>
+            </h1>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15, duration: 0.6 }}
+            className="lg:pb-2"
+          >
+            <p className="max-w-md text-base leading-8 text-slate-600 dark:text-slate-300">
+              Have a question about admissions, school information,
+              or getting in touch with our office? Send us an inquiry
+              or use the contact details below.
+            </p>
+            <a
+              href="#contact-form"
+              className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:gap-3 dark:text-blue-400"
             >
-              <div className="w-12 h-12 bg-white dark:bg-slate-800 text-blue-600 rounded-2xl flex items-center justify-center mb-8 shadow-sm">
-                <node.icon size={20} />
-              </div>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 mb-2">
-                {node.label}
-              </p>
-              <h4 className="text-xl font-black tracking-tight mb-4">
-                {node.val}
-              </h4>
-              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-                {node.desc}
-              </p>
-            </motion.div>
-          ))}
+              Write to us <ArrowUpRight size={17} />
+            </a>
+          </motion.div>
         </div>
       </section>
 
-      {/* 3. CONTACT FORM & MAP */}
-      <section className="container mx-auto px-6 py-32">
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          {/* Map Side */}
-          <div className="space-y-8 order-2 lg:order-1">
-            <div className="rounded-[3rem] overflow-hidden border border-slate-200 dark:border-white/10 h-[500px] w-full relative shadow-2xl">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3618.324330095434!2d66.96087277358438!3d24.92101884283506!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb315c05289dc05%3A0xd6c68a28db42254f!2sZEMIMAAS!5e0!3m2!1sen!2s!4v1777203134938!5m2!1sen!2s"
-                width="100%"
-                height="100%"
-                style={{
-                  border: 0,
-                  filter: "grayscale(1) invert(0.9) contrast(1.2)",
-                }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="dark:opacity-80"
-              />
+      {/* CONTACT CARDS */}
+      <section className="px-5 py-14 sm:px-6 lg:py-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-8">
+            <span className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
+              Contact Information
+            </span>
+            <h2 className="mt-3 text-xl font-bold tracking-tight sm:text-4xl">
+              Reach Our School
+            </h2>
+          </div>
 
-              <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white dark:border-white/10">
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-blue-600 rounded-lg text-white">
-                    <MapPin size={18} />
+          <div className="grid gap-4 md:grid-cols-3">
+            {infoCards.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={item.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.08 }}
+                  className="rounded-2xl border border-slate-200 bg-slate-50 p-7 dark:border-white/10 dark:bg-[#101E32]"
+                >
+                  <div className="mb-7 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600 dark:text-blue-400">
+                    <Icon size={23} strokeWidth={1.7} />
                   </div>
-                  <div>
-                    <p className="font-black text-sm uppercase tracking-tight">
-                      Main Branch Address
-                    </p>
-                    <p className="text-xs text-slate-500 font-medium">
-                      ZEMIMAAS, UG49 Rubby Cenima & Shopping Mall, Karachi, Pakistan
-                    </p>
+                  <h3 className="text-lg font-bold">{item.label}</h3>
+                  <div className="mt-3 break-words text-sm font-semibold text-blue-600 dark:text-blue-300">
+                    {item.href ? (
+                      <a href={item.href} className="hover:underline">
+                        {item.detail}
+                      </a>
+                    ) : (
+                      <span>{item.detail || item.fallback}</span>
+                    )}
                   </div>
+                  <p className="mt-4 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                    {item.description}
+                  </p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* INQUIRY FORM + SIDE PANEL */}
+      <section
+        id="contact-form"
+        className="scroll-mt-24 px-5 pb-20 sm:px-6 lg:pb-28"
+      >
+        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+          <div className="flex flex-col justify-between rounded-3xl bg-[#112747] p-8 text-white sm:p-10 lg:p-12">
+            <div>
+              <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-2xl border border-blue-300/20 bg-blue-400/10">
+                <MessageSquareText size={27} className="text-blue-300" />
+              </div>
+              <span className="text-xs font-bold uppercase tracking-[0.18em] text-blue-300">
+                School Inquiries
+              </span>
+              <h2 className="mt-4 text-xl font-bold leading-tight sm:text-4xl">
+                Have something
+                <span className="block font-serif font-normal italic text-blue-300">
+                  to ask?
+                </span>
+              </h2>
+              <p className="mt-6 max-w-sm text-sm leading-7 text-slate-300">
+                Whether you're a parent, prospective student,
+                or visitor, choose a relevant subject and share
+                your question with the school office.
+              </p>
+            </div>
+
+            <div className="mt-12 space-y-5 border-t border-white/15 pt-8">
+              <div className="flex items-start gap-3">
+                <Clock3 size={19} className="mt-1 shrink-0 text-blue-300" />
+                <div>
+                  <p className="text-sm font-semibold">Office Hours</p>
+                  <p className="mt-1 text-sm text-slate-300">
+                    {schoolContact.officeHours || "To be confirmed by the school"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <School size={19} className="mt-1 shrink-0 text-blue-300" />
+                <div>
+                  <p className="text-sm font-semibold">Admissions Information</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-300">
+                    For admission steps and requirements,
+                    please visit the Admissions page.
+                  </p>
+                  {setPage && (
+                    <button
+                      type="button"
+                      onClick={() => setPage("admissions")}
+                      className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-blue-300 hover:text-white"
+                    >
+                      View Admissions <ArrowRight size={16} />
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Form Side */}
-          <div className="order-1 lg:order-2">
-            <motion.form
-              onSubmit={handleSubmit}
-              className="p-10 md:p-12 rounded-[3.5rem] bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 shadow-xl space-y-6"
-            >
-              <AnimatePresence mode="wait">
-                {formState === "success" ? (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="py-20 text-center space-y-6"
-                  >
-                    <div className="w-20 h-20 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <CheckCircle2 size={40} />
-                    </div>
-                    <h3 className="text-3xl font-black tracking-tighter">
-                      Thank You!
-                    </h3>
-                    <p className="text-slate-500 font-medium">
-                      Your message has been received. Our team will contact you
-                      shortly.
-                    </p>
-                    <button
-                      onClick={() => setFormState("idle")}
-                      className="text-blue-600 font-black uppercase tracking-widest text-[10px]"
-                    >
-                      Send another message
-                    </button>
-                  </motion.div>
-                ) : (
-                  <div className="space-y-6">
-                    <h3 className="text-3xl font-black tracking-tighter mb-8">
-                      Send a Message
-                    </h3>
+          <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 dark:border-white/10 dark:bg-[#101A2C] sm:p-10 lg:p-12">
+            <div className="mb-8">
+              <span className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
+                Inquiry Form
+              </span>
+              <h2 className="mt-3 text-xl font-bold sm:text-3xl">
+                Send a Message
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                Complete the fields below to prepare your inquiry.
+              </p>
+            </div>
 
-                    {formState === "error" && (
-                      <p className="text-red-500 text-xs font-bold uppercase mb-4">
-                        Transmission failed. Please try again.
-                      </p>
-                    )}
-
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <input
-                        required
-                        name="full_name"
-                        type="text"
-                        placeholder="Your Name"
-                        className="w-full px-8 py-5 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-white/5 focus:ring-2 focus:ring-blue-600 transition-all outline-none font-bold text-sm"
-                      />
-                      <input
-                        required
-                        name="email"
-                        type="email"
-                        placeholder="Email Address"
-                        className="w-full px-8 py-5 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-white/5 focus:ring-2 focus:ring-blue-600 transition-all outline-none font-bold text-sm"
-                      />
-                    </div>
-                    <select
-                      name="subject"
-                      className="w-full px-8 py-5 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-white/5 focus:ring-2 focus:ring-blue-600 transition-all outline-none font-bold text-sm appearance-none cursor-pointer"
-                    >
-                      <option>General Inquiry</option>
-                      <option>Admissions Question</option>
-                      <option>Campus Tour Request</option>
-                      <option>Technical Support</option>
-                    </select>
-                    <textarea
-                      name="message"
-                      rows="4"
-                      placeholder="How can we help you?"
-                      className="w-full px-8 py-6 bg-white dark:bg-slate-800 rounded-[2rem] border border-slate-200 dark:border-white/5 focus:ring-2 focus:ring-blue-600 transition-all outline-none font-bold text-sm resize-none"
-                    ></textarea>
-
-                    <button
-                      type="submit"
-                      disabled={formState === "sending"}
-                      className="w-full py-6 bg-blue-600 text-white rounded-full font-black uppercase tracking-[0.3em] text-[10px] shadow-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-3 group"
-                    >
-                      {formState === "sending" ? (
-                        "Sending Signal..."
-                      ) : (
-                        <>
-                          Send Message{" "}
-                          <ArrowUpRight
-                            size={18}
-                            className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
-                          />
-                        </>
-                      )}
-                    </button>
-
-                    <div className="flex items-center justify-center gap-6 pt-6 opacity-40">
-                      <div className="flex items-center gap-2">
-                        <ShieldCheck size={14} />{" "}
-                        <span className="text-[9px] font-bold uppercase tracking-widest">
-                          Secure Form
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock size={14} />{" "}
-                        <span className="text-[9px] font-bold uppercase tracking-widest">
-                          24h Response
-                        </span>
-                      </div>
-                    </div>
+            {status === "success" ? (
+              <div role="status" className="rounded-2xl border border-green-500/30 bg-green-500/10 p-8 text-center">
+                <CheckCircle2 className="mx-auto text-green-500" size={42} />
+                <h3 className="mt-4 text-xl font-bold">Message submitted</h3>
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">
+                  Your inquiry was accepted by the configured form service.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setStatus("idle")}
+                  className="mt-5 text-sm font-semibold text-blue-600 dark:text-blue-300"
+                >
+                  Send another message
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="contact-name" className="mb-2 block text-sm font-semibold">
+                      Full Name *
+                    </label>
+                    <input id="contact-name" name="full_name" required type="text" autoComplete="name" placeholder="Your full name" className={fieldClass} />
                   </div>
+                  <div>
+                    <label htmlFor="contact-email" className="mb-2 block text-sm font-semibold">
+                      Email Address *
+                    </label>
+                    <input id="contact-email" name="email" required type="email" autoComplete="email" placeholder="name@example.com" className={fieldClass} />
+                  </div>
+                </div>
+
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="contact-phone" className="mb-2 block text-sm font-semibold">
+                      Phone Number
+                    </label>
+                    <input id="contact-phone" name="phone" type="tel" autoComplete="tel" placeholder="Your phone number" className={fieldClass} />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-subject" className="mb-2 block text-sm font-semibold">
+                      Inquiry Type *
+                    </label>
+                    <select id="contact-subject" name="subject" required defaultValue="" className={fieldClass}>
+                      <option value="" disabled>Select a subject</option>
+                      <option value="General Inquiry">General Inquiry</option>
+                      <option value="Admissions">Admissions</option>
+                      <option value="School Visit">School Visit</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="contact-message" className="mb-2 block text-sm font-semibold">
+                    Your Message *
+                  </label>
+                  <textarea id="contact-message" name="message" required rows={5} placeholder="Write your question or message here..." className={`${fieldClass} resize-y`} />
+                </div>
+
+                {status === "error" && (
+                  <p role="alert" className="flex items-center gap-2 text-sm text-red-500">
+                    <AlertCircle size={17} /> Message could not be submitted. Please try again.
+                  </p>
                 )}
-              </AnimatePresence>
-            </motion.form>
+
+                {!formConfigured && (
+                  <p role="status" className="rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm leading-6 text-amber-700 dark:text-amber-200">
+                    Online submission is not yet configured. The school must connect its official form service before messages can be sent.
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={!formConfigured || status === "sending"}
+                  className="flex w-full items-center justify-center gap-3 rounded-xl bg-blue-600 px-6 py-4 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {status === "sending" ? "Sending..." : "Send Inquiry"}
+                  <Send size={17} />
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </section>
 
-      {/* 4. SIMPLE FAQ SECTION */}
-      <section className="bg-slate-50 dark:bg-slate-900/30 py-32 border-y border-slate-100 dark:border-white/5">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl font-black tracking-tighter mb-12 text-center">
-              Frequently Asked Questions
+      {/* SCHOOL LOCATION */}
+      <section className="border-t border-slate-200 bg-slate-50 px-5 py-10 sm:py-16 dark:border-white/10 dark:bg-[#0B1527] sm:px-6 lg:py-20">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-2">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600 dark:text-blue-400">
+              Find Our School
+            </span>
+            <h2 className="mt-3 text-xl font-bold tracking-tight sm:text-4xl">
+              School Location
             </h2>
-            <div className="space-y-4">
-              {[
-                {
-                  q: "When are the school hours?",
-                  a: "Classes run from 8:30 AM to 3:30 PM, Monday through Friday.",
-                },
-                {
-                  q: "How do I apply for the next semester?",
-                  a: "You can start the process on our Enroll page or download the prospectus for full details.",
-                },
-                {
-                  q: "Are campus tours available?",
-                  a: "Yes, we host guided campus tours every Tuesday and Thursday. Please book via the contact form.",
-                },
-              ].map((faq, i) => (
-                <details
-                  key={i}
-                  className="group bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-white/5 overflow-hidden"
-                >
-                  <summary className="flex items-center justify-between cursor-pointer list-none p-8">
-                    <span className="text-lg font-bold tracking-tight">
-                      {faq.q}
-                    </span>
-                    <ChevronDown
-                      size={20}
-                      className="group-open:rotate-180 transition-transform text-blue-600"
-                    />
-                  </summary>
-                  <p className="px-8 pb-8 text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-                    {faq.a}
-                  </p>
-                </details>
-              ))}
+            <p className="mt-5 max-w-md text-sm leading-7 text-slate-600 dark:text-slate-300">
+              The school's verified address and directions will appear here once confirmed.
+              Please contact the school before planning a visit.
+            </p>
+          </div>
+
+          <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white dark:border-white/10 dark:bg-[#101E32]">
+            <iframe
+              title="School location - Naval Colony, Karachi"
+              src="https://www.google.com/maps?q=9%2C%20Naval%20Colony%2C%20Karachi%2C%2075760&output=embed"
+              className="h-[320px] w-full border-0 sm:h-[380px]"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+            <div className="flex flex-wrap items-center justify-between gap-4 p-5">
+              <p className="text-sm font-semibold">
+                9, Naval Colony, Karachi, 75760
+              </p>
+              <a
+                href="https://www.google.com/maps?daddr=9%2C%20Naval%20Colony%2C%20Karachi%2C%2075760"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400"
+              >
+                Get Directions <ArrowUpRight size={16} />
+              </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. FOOTER SOCIALS CTA */}
-      <section className="container mx-auto px-6 py-40 text-center">
-        <SectionLabel>Stay Connected</SectionLabel>
-        <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-12">
-          Follow Our <span className="text-blue-600">Journey.</span>
-        </h2>
-        <div className="flex flex-wrap justify-center gap-4">
-          {["Instagram", "LinkedIn", "Twitter", "Facebook"].map((social) => (
-            <button
-              key={social}
-              className="px-10 py-4 rounded-full border border-slate-200 dark:border-white/10 font-black uppercase tracking-widest text-[9px] hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all"
-            >
-              {social}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* Scroll Scrubber */}
       <motion.div
-        className="fixed top-0 left-0 bottom-0 w-1 bg-blue-600 z-[100] origin-top"
-        style={{ scaleY: smoothProgress }}
+        aria-hidden="true"
+        className="pointer-events-none fixed bottom-0 left-0 top-0 z-[100] w-1 origin-top bg-blue-600"
+        style={{ scaleY: progress }}
       />
-    </div>
+    </main>
   );
-};
-
-export default Contact;
+}

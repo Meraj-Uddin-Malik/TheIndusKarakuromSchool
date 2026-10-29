@@ -1,43 +1,66 @@
-// Components imports
+
 import HeroSection from "../components/Home/HeroSection";
 import ScrollingTicker from "../components/Home/ScrollingTicker";
 import StatsSection from "../components/Home/StatsSection";
+import AboutPreview from "../components/Home/AboutPreview";
 import PillarsSection from "../components/Home/PillarsSection";
 import CampusSection from "../components/Home/CampusSection";
-// import InnovationSection from "../components/Home/InnovationSection";
 import CTASection from "../components/Home/CTASection";
-import AboutPreview from "../components/Home/AboutPreview";
+
+import SchoolImage from "../assets/Tiks.jpeg";
 
 const Home = ({ setPage }) => {
   return (
-    <div className="space-y-24 pb-32 overflow-hidden">
+    <main className="relative isolate min-h-screen text-slate-900 dark:text-white">
 
-      {/* HERO */}
-      <HeroSection setPage={setPage} />
+      {/* ========================================
+          FULL HOME PAGE SCHOOL BACKGROUND
+          Uses your actual Tiks.jpeg photograph
+      ======================================== */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0"
+      >
+        <img
+          src={SchoolImage}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
 
+        {/* Navy transparent overlay */}
+<div className="absolute inset-0 bg-white/85 dark:bg-[#041225]/90" />
+        {/* Subtle gradient for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-slate-200/20 dark:from-[#071b35]/20 dark:via-transparent dark:to-[#071b35]/40" />
+      </div>
 
-      {/* TICKER */}
-      <ScrollingTicker />
+      {/* ========================================
+          HOME PAGE CONTENT
+      ======================================== */}
+      <div className="relative z-10">
 
-      {/* STATS */}
-      <StatsSection />
+        {/* HERO */}
+        <HeroSection setPage={setPage} />
 
-       {/* TICKER */}
-      <AboutPreview />
+        {/* SCROLLING TICKER */}
+        <ScrollingTicker />
 
-      {/* PILLARS */}
-      <PillarsSection />
+        {/* WHY CHOOSE TIKS */}
+        <StatsSection />
 
-      {/* CAMPUS */}
-      <CampusSection />
+        {/* ABOUT SCHOOL */}
+        <AboutPreview setPage={setPage} />
 
-      {/* INNOVATION */}
-      {/* <InnovationSection /> */}
+        {/* CORE VALUES */}
+        <PillarsSection />
 
-      {/* CTA */}
-      <CTASection setPage={setPage} />
+        {/* CAMPUS GALLERY */}
+        <CampusSection setPage={setPage} />
 
-    </div>
+        {/* ADMISSIONS CTA */}
+        <CTASection setPage={setPage} />
+
+      </div>
+    </main>
   );
 };
 

@@ -1,188 +1,393 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import * as Icons from 'lucide-react';
+import { useRef } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
+import {
+  ArrowRight,
+  BookOpen,
+  Compass,
+  HeartHandshake,
+  Lightbulb,
+  GraduationCap,
+  Quote,
+  Sparkles,
+} from "lucide-react";
 
 import bgImage from "../assets/Books.jpeg";
 import Principal from "../assets/Principal.jpeg";
 
-const { Fingerprint, Activity, ShieldCheck, Zap, Orbit, Quote } = Icons;
+const fadeUp = {
+  hidden: { opacity: 0, y: 32 },
+  visible: { opacity: 1, y: 0 },
+};
 
 const SectionLabel = ({ children }) => (
+  <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-blue-600 dark:text-blue-400">
+    <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+    {children}
+  </span>
+);
+
+const Reveal = ({ children, className = "", delay = 0 }) => (
   <motion.div
-    initial={{ opacity: 0, x: -20 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    viewport={{ once: true }}
-    className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-blue-600/10 text-blue-600 dark:text-blue-400 text-[9px] font-black uppercase tracking-[0.5em] mb-10 border border-blue-600/20"
+    variants={fadeUp}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true, amount: 0.15 }}
+    transition={{ duration: 0.65, delay, ease: "easeOut" }}
+    className={className}
   >
-    <div className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
     {children}
   </motion.div>
 );
 
-const FloatingIcon = ({ Icon, className = "", delay = 0 }) => (
-  <motion.div
-    animate={{ y: [0, -20, 0], rotate: [0, 5, -5, 0], scale: [1, 1.1, 1] }}
-    transition={{ duration: 5, repeat: Infinity, delay, ease: "easeInOut" }}
-    className={`absolute pointer-events-none opacity-20 ${className}`}
-  >
-    <Icon size={120} />
-  </motion.div>
-);
+const values = [
+  {
+    icon: BookOpen,
+    title: "Meaningful Learning",
+    description:
+      "We believe education should build understanding, curiosity, and the confidence to ask questions.",
+  },
+  {
+    icon: HeartHandshake,
+    title: "Character & Respect",
+    description:
+      "Kindness, responsibility, and mutual respect are essential parts of a healthy learning environment.",
+  },
+  {
+    icon: Lightbulb,
+    title: "Creative Thinking",
+    description:
+      "We value imagination, thoughtful problem-solving, and opportunities for students to express their ideas.",
+  },
+  {
+    icon: Compass,
+    title: "Growth With Purpose",
+    description:
+      "Our approach places importance on personal development alongside academic progress.",
+  },
+];
 
-const About = () => {
+const About = ({ setPage }) => {
   const containerRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"]
+    offset: ["start start", "end end"],
   });
 
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 60,
-    damping: 20
+    stiffness: 100,
+    damping: 30,
   });
 
-  const heroScale = useTransform(smoothProgress, [0, 0.1], [1, 0.7]);
-  const heroRotate = useTransform(smoothProgress, [0, 0.1], [0, -10]);
+  const navigate = (destination) => {
+    if (typeof setPage === "function") {
+      setPage(destination);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
     <div
       ref={containerRef}
-      className="relative bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-1000 overflow-hidden selection:bg-blue-500 selection:text-white"
+      className="relative overflow-hidden bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100"
     >
+      {/* HERO */}
+      <section className="relative flex min-h-[78vh] items-center overflow-hidden bg-[#0B1220] px-6 py-32 text-white">
+        <div className="absolute inset-0">
+          <img
+            src={bgImage}
+            alt="Books representing learning and education"
+            className="h-full w-full object-cover opacity-35"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/95 via-[#0B1220]/80 to-[#0B1220]/45" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0B1220]/90 via-transparent to-transparent" />
+        </div>
 
-      {/* 🌄 BACKGROUND IMAGE (FIXED) */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src={bgImage}
-          alt="background"
-          className="object-cover opacity-40 dark:opacity-20"
-        />
-      </div>
+        <div className="relative z-10 mx-auto w-full max-w-7xl">
+          <Reveal>
+            <span className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.25em] text-blue-200 backdrop-blur-md">
+              <Sparkles size={14} />
+              Discover Our School
+            </span>
+          </Reveal>
 
-      {/* 🌫 OVERLAY (FIXED BALANCED CONTRAST) */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-white/40 via-white/60 to-white/80 dark:from-black/70 dark:via-black/80 dark:to-black/90" />
-
-      {/* CONTENT */}
-      <div className="relative z-10">
-
-        {/* HERO */}
-        <section className="relative h-[120vh] flex items-center justify-center px-6 overflow-hidden">
-          <motion.div
-            style={{ scale: heroScale, rotate: heroRotate }}
-            className="container mx-auto text-center z-10"
-          >
-            <SectionLabel>PHASE 01: GENESIS</SectionLabel>
-
-            <h1 className="text-[16vw] md:text-[14vw] font-black tracking-tighter leading-[0.7] mb-12">
-              BORN <br />
-              <span className="italic font-serif opacity-50">OF</span> VOID.
+          <Reveal delay={0.1}>
+            <h1 className="max-w-5xl text-2xl font-bold leading-[1.08] tracking-tight sm:text-6xl md:text-7xl lg:text-8xl">
+              A place to learn.
+              <span className="mt-2 block text-blue-400">
+                A foundation to grow.
+              </span>
             </h1>
+          </Reveal>
 
-            <p className="text-xl md:text-3xl max-w-3xl mx-auto font-medium leading-tight opacity-70">
-              EIA Nexus began as a radical experiment: can we teach machines to learn, and humans to feel?
+          <Reveal delay={0.2}>
+            <p className="mt-8 max-w-2xl text-base leading-8 text-slate-200 sm:text-lg">
+              Get to know The Indus Karakuram School — our
+              educational values, our approach to learning,
+              and the people who make a school community.
             </p>
-          </motion.div>
+          </Reveal>
 
-          <FloatingIcon Icon={Orbit} className="top-1/4 left-1/4" delay={0} />
-          <FloatingIcon Icon={Activity} className="bottom-1/4 right-1/4" delay={1} />
-        </section>
+          <Reveal delay={0.3} className="mt-10">
+            <button
+              type="button"
+              onClick={() => navigate("admissions")}
+              className="inline-flex items-center gap-3 rounded-xl bg-blue-600 px-7 py-4 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5 hover:bg-blue-500"
+            >
+              Explore Admissions
+              <ArrowRight size={18} />
+            </button>
+          </Reveal>
+        </div>
+      </section>
 
-        {/* SKILL TREE */}
-        <section className="container mx-auto px-6 py-40 min-h-screen">
-          <SectionLabel>PHASE 02: NEURAL ARCHITECTURE</SectionLabel>
+      {/* INTRODUCTION */}
+      <section className="mx-auto grid max-w-7xl items-center gap-14 px-6 py-12 sm:py-24 lg:grid-cols-2 lg:gap-24 lg:py-32">
+        <Reveal>
+          <SectionLabel>Who We Are</SectionLabel>
 
-          <div className="grid lg:grid-cols-2 gap-24 items-center">
+          <h2 className="mt-7 text-xl font-bold leading-tight tracking-tight sm:text-5xl">
+            Education is about
+            <span className="block text-blue-600 dark:text-blue-400">
+              more than lessons.
+            </span>
+          </h2>
 
-            <div className="space-y-12">
-              <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-none">
-                The Skill <br />Tree.
-              </h2>
+          <div className="mt-7 space-y-5 text-base leading-8 text-slate-600 dark:text-slate-300">
+            <p>
+              At The Indus Karakuram School, we believe
+              education should help young people develop
+              knowledge, confidence, character, and curiosity.
+            </p>
+            <p>
+              A meaningful school experience is shaped by
+              learning in the classroom, relationships with
+              teachers, and opportunities to discover
+              individual strengths.
+            </p>
+            <p>
+              Our educational philosophy brings academic
+              learning and personal development together,
+              with the student at the centre.
+            </p>
+          </div>
+        </Reveal>
 
-              <div className="space-y-8">
-                {[
-                  { title: "Cognitive Fluency", desc: "Adaptive neural paths.", icon: Activity },
-                  { title: "Planetary Ethics", desc: "Solving AI dilemmas.", icon: ShieldCheck },
-                  { title: "Quantum Logic", desc: "Multi-state intelligence.", icon: Zap }
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ x: 20 }}
-                    className="flex gap-6 items-start border-l-2 border-slate-300 dark:border-slate-700 pl-8 py-4 opacity-60 hover:opacity-100 transition-all"
-                  >
-                    <item.icon size={32} />
-                    <div>
-                      <h4 className="text-2xl font-black">{item.title}</h4>
-                      <p className="font-medium opacity-70">{item.desc}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+        <Reveal delay={0.15}>
+          <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-9 shadow-xl shadow-slate-900/5 dark:border-white/10 dark:bg-slate-900 sm:p-12">
+            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-blue-500/10 blur-3xl" />
 
-            {/* ORBIT VISUAL */}
-            <div className="relative aspect-square bg-slate-500/5 rounded-[4rem] border border-slate-300 dark:border-white/10 flex items-center justify-center overflow-hidden">
+            <GraduationCap
+              size={42}
+              strokeWidth={1.5}
+              className="mb-10 text-blue-600 dark:text-blue-400"
+            />
 
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 opacity-20"
-              >
-                <svg className="w-full h-full" viewBox="0 0 200 200">
-                  <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" className="text-blue-600" />
-                  <circle cx="100" cy="100" r="60" fill="none" stroke="currentColor" className="text-blue-500" />
-                  <circle cx="100" cy="100" r="40" fill="none" stroke="currentColor" className="text-blue-400" />
-                </svg>
-              </motion.div>
+            <p className="relative text-2xl font-semibold leading-relaxed tracking-tight sm:text-3xl">
+              "Every student deserves an environment
+              where learning feels meaningful and
+              personal growth matters."
+            </p>
 
-              <div className="relative z-10 text-center">
-                <Fingerprint size={120} className="mx-auto mb-6 text-blue-600 animate-pulse" />
-                <span className="text-[10px] font-black uppercase tracking-[0.5em]">
-                  Biometric Hub
+            <div className="mt-10 h-1 w-16 rounded-full bg-blue-600" />
+            <p className="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              Our Educational Philosophy
+            </p>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* VISION AND MISSION */}
+      <section className="border-y border-slate-200 bg-white py-12 sm:py-24 dark:border-white/10 dark:bg-slate-900/50 lg:py-32">
+        <div className="mx-auto max-w-7xl px-6">
+          <Reveal>
+            <SectionLabel>Our Direction</SectionLabel>
+            <h2 className="mt-7 max-w-3xl text-xl font-bold tracking-tight sm:text-5xl">
+              Guided by purpose.
+              <span className="block text-blue-600 dark:text-blue-400">
+                Focused on students.
+              </span>
+            </h2>
+          </Reveal>
+
+          <div className="mt-14 grid gap-6 md:grid-cols-2">
+            <Reveal>
+              <div className="h-full rounded-[2rem] border border-slate-200 bg-slate-50 p-9 dark:border-white/10 dark:bg-slate-950 sm:p-12">
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
+                  01 / Our Vision
                 </span>
+                <h3 className="mt-6 text-xl font-bold">
+                  A brighter future through education.
+                </h3>
+                <p className="mt-5 leading-8 text-slate-600 dark:text-slate-300">
+                  We aspire to help students become thoughtful,
+                  capable, and responsible individuals who
+                  approach the future with confidence.
+                </p>
               </div>
+            </Reveal>
 
-            </div>
+            <Reveal delay={0.1}>
+              <div className="h-full rounded-[2rem] border border-blue-500/20 bg-blue-600 p-9 text-white sm:p-12">
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-100">
+                  02 / Our Mission
+                </span>
+                <h3 className="mt-6 text-xl font-bold">
+                  Learning that supports every stage of growth.
+                </h3>
+                <p className="mt-5 leading-8 text-blue-50">
+                  Our mission is to encourage academic
+                  understanding, good character, independent
+                  thinking, and a lasting interest in learning.
+                </p>
+              </div>
+            </Reveal>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* LEADERSHIP */}
-        <section className="container mx-auto px-6 py-40">
+      {/* EDUCATIONAL VALUES */}
+      <section className="mx-auto max-w-7xl px-6 py-12 sm:py-24 lg:py-32">
+        <Reveal>
+          <SectionLabel>What Matters To Us</SectionLabel>
+          <h2 className="mt-7 max-w-3xl text-xl font-bold tracking-tight sm:text-5xl">
+            Values that shape
+            <span className="block text-blue-600 dark:text-blue-400">
+              the learning experience.
+            </span>
+          </h2>
+        </Reveal>
 
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
+        <div className="mt-14 grid gap-5 md:grid-cols-2">
+          {values.map((item, index) => {
+            const Icon = item.icon;
 
-            <div>
-              <SectionLabel>PHASE 04: PRINCIPAL</SectionLabel>
+            return (
+              <Reveal key={item.title} delay={index * 0.08}>
+                <div className="group h-full rounded-[1.75rem] border border-slate-200 bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/40 hover:shadow-xl dark:border-white/10 dark:bg-slate-900 sm:p-10">
+                  <div className="mb-8 inline-flex rounded-2xl bg-blue-600/10 p-4 text-blue-600 transition-colors group-hover:bg-blue-600 group-hover:text-white dark:text-blue-400">
+                    <Icon size={28} strokeWidth={1.7} />
+                  </div>
 
-              <Quote size={80} className="opacity-20 mb-10" />
+                  <h3 className="text-xl font-bold">
+                    {item.title}
+                  </h3>
+                  <p className="mt-4 leading-8 text-slate-600 dark:text-slate-300">
+                    {item.description}
+                  </p>
+                </div>
+              </Reveal>
+            );
+          })}
+        </div>
+      </section>
 
-              <h3 className="text-5xl md:text-7xl font-black leading-[0.85] mb-10">
-                "WE DO NOT <br />REPRESENT <br />THE PAST."
-              </h3>
-
-              <p className="opacity-60 max-w-lg">
-                TIKSchools exists to redefine education itself — replacing outdated, factory-style learning with an adaptive, intelligence-driven ecosystem where every learner evolves with purpose, not pressure.</p>
+      {/* PRINCIPAL SECTION */}
+      <section className="border-y border-slate-200 bg-white py-12 sm:py-24 dark:border-white/10 dark:bg-slate-900/50 lg:py-32">
+        <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 lg:grid-cols-2 lg:gap-24">
+          <Reveal>
+            <div className="relative mx-auto max-w-lg">
+              <div className="absolute -inset-4 rounded-[2.5rem] border border-blue-500/15" />
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-slate-200 dark:bg-slate-800">
+                <img
+                  src={Principal}
+                  alt="School principal"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </div>
             </div>
+          </Reveal>
 
-            <div className="aspect-[3/4] rounded-[4rem] overflow-hidden border border-slate-300 dark:border-white/10">
-              <img
-                src={Principal}
-                className="w-full h-full object-cover grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500"
-                alt="leader"
-              />
+          <Reveal delay={0.1}>
+            <SectionLabel>School Leadership</SectionLabel>
+
+            <Quote
+              size={48}
+              className="mt-8 text-blue-600/40 dark:text-blue-400/40"
+            />
+
+            <h2 className="mt-5 text-xl font-bold leading-tight tracking-tight sm:text-5xl">
+              Leadership that puts
+              <span className="block text-blue-600 dark:text-blue-400">
+                students first.
+              </span>
+            </h2>
+
+            <p className="mt-7 text-base leading-8 text-slate-600 dark:text-slate-300">
+              Strong school leadership helps create an
+              environment where students feel supported,
+              teachers are valued, and learning remains
+              the central priority.
+            </p>
+
+            <p className="mt-5 leading-8 text-slate-600 dark:text-slate-300">
+              We believe a successful school community
+              grows through communication, responsibility,
+              and a shared commitment to education.
+            </p>
+
+            <div className="mt-9 border-l-2 border-blue-600 pl-5">
+              <p className="font-bold">
+                The Indus Karakuram School
+              </p>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                School Leadership
+              </p>
             </div>
+          </Reveal>
+        </div>
+      </section>
 
-          </div>
-        </section>
+      {/* CALL TO ACTION */}
+      <section className="relative overflow-hidden bg-[#0B1220] px-6 py-12 sm:py-24 text-white lg:py-32">
+        <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-blue-600/20 blur-3xl" />
 
-      </div>
+        <div className="relative z-10 mx-auto max-w-4xl text-center">
+          <Reveal>
+            <SectionLabel>Take The Next Step</SectionLabel>
+
+            <h2 className="mt-8 text-xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+              Discover what comes next
+              <span className="block text-blue-400">
+                for your child.
+              </span>
+            </h2>
+
+            <p className="mx-auto mt-7 max-w-2xl leading-8 text-slate-300">
+              Explore admissions information or get in
+              touch to learn more about The Indus
+              Karakuram School.
+            </p>
+
+            <div className="mt-10 flex flex-wrap justify-center gap-4">
+              <button
+                type="button"
+                onClick={() => navigate("admissions")}
+                className="inline-flex items-center gap-3 rounded-xl bg-blue-600 px-7 py-4 text-sm font-semibold text-white transition-colors hover:bg-blue-500"
+              >
+                Explore Admissions
+                <ArrowRight size={18} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate("contact")}
+                className="rounded-xl border border-white/20 bg-white/10 px-7 py-4 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+              >
+                Contact Us
+              </button>
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       {/* SCROLL PROGRESS */}
       <motion.div
-        className="fixed top-0 left-0 bottom-0 w-1 bg-blue-600 z-[100] origin-top"
+        aria-hidden="true"
+        className="pointer-events-none fixed bottom-0 left-0 top-0 z-[100] w-1 origin-top bg-blue-600"
         style={{ scaleY: smoothProgress }}
       />
-
     </div>
   );
 };

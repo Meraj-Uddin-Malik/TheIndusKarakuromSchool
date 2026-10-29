@@ -1,119 +1,124 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { Sparkles, ArrowRight, ArrowUpRight, Globe, Zap } from "lucide-react";
-import MagneticButton from "./MagneticButton";
 
-// ✅ IMPORT YOUR IMAGE
-import schoolImg from "../../assets/Tiks.jpeg";
+import { motion, useReducedMotion } from "framer-motion";
+import { BookOpen, HeartHandshake, Lightbulb } from "lucide-react";
+
+const features = [
+  {
+    icon: BookOpen,
+    title: "Quality Learning",
+    description: "Building strong foundations",
+  },
+  {
+    icon: HeartHandshake,
+    title: "Strong Values",
+    description: "Growing with character",
+  },
+  {
+    icon: Lightbulb,
+    title: "Creative Thinking",
+    description: "Encouraging curiosity",
+  },
+];
 
 const HeroSection = ({ setPage }) => {
-  const { scrollYProgress } = useScroll();
+  const reduceMotion = useReducedMotion();
 
-  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
-  const opacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-  const yParallax = useTransform(scrollYProgress, [0, 1], [0, 300]);
-  const yParallaxReverse = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const navigate = (page) => {
+    if (typeof setPage === "function") {
+      setPage(page);
+    }
+  };
 
   return (
-    <section className="relative min-h-screen flex items-center pt-20 px-6">
-      
-      {/* 🔥 BACKGROUND */}
-      <motion.div
-        style={{ scale, opacity }}
-        className="absolute inset-0 z-0 overflow-hidden"
-      >
-        {/* ✅ SCHOOL IMAGE */}
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-30 scale-105"
-          style={{
-            backgroundImage: `url(${schoolImg})`,
-          }}
-        />
+    <section
+      aria-labelledby="hero-heading"
+      className="relative flex min-h-0 items-center bg-transparent px-5 pb-10 pt-24 sm:min-h-[90vh] sm:px-6 sm:pb-16 sm:pt-32 lg:pt-36"
+    >
+      <div className="relative z-10 mx-auto w-full max-w-7xl">
 
-        {/* ✅ GRADIENT OVERLAY */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-500/20 via-white/80 to-white dark:from-blue-900/30 dark:via-slate-900/70 dark:to-slate-950" />
-
-        {/* 🔥 ORBS */}
+        {/* HERO CONTENT */}
         <motion.div
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-20%] right-[-10%] w-[70%] h-[70%] bg-blue-500/20 rounded-full blur-[120px]"
-        />
-
-        <motion.div
-          animate={{ scale: [1, 1.5, 1], rotate: [0, -90, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-500/15 rounded-full blur-[100px]"
-        />
-
-        {/* 🔥 FLOATING ICONS */}
-        <motion.div
-          style={{ y: yParallax }}
-          className="absolute top-[20%] right-[15%] text-blue-500/20 hidden md:block"
-        >
-          <Globe size={180} className="animate-[spin_40s_linear_infinite]" />
-        </motion.div>
-
-        <motion.div
-          style={{ y: yParallaxReverse }}
-          className="absolute bottom-[25%] left-[10%] text-purple-500/20 hidden md:block"
-        >
-          <Zap size={120} className="animate-pulse" />
-        </motion.div>
-      </motion.div>
-
-      {/* 🔥 CONTENT */}
-      <div className="container mx-auto relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 0.7 }}
+          className="max-w-4xl"
         >
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 mt-8 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest mb-8 border border-blue-100 dark:border-blue-800/50">
-            <Sparkles size={14} /> Why Choose TIKSchools
+          {/* EYEBROW */}
+          <div className="mb-4 flex items-center gap-2 sm:mb-7 sm:gap-3">
+            <span className="h-[2px] w-9 bg-blue-300" />
+
+            <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-blue-100 sm:text-xs sm:tracking-[0.2em]">
+              Welcome to The Indus Karakuram School
+            </span>
           </div>
 
-          {/* Heading */}
-          <h1 className="text-5xl md:text-7xl lg:text-6xl font-black text-slate-900 dark:text-white leading-tight mb-6 tracking-tight">
-            BEYOND <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 relative">
-              LIMITS.
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ delay: 0.8, duration: 1 }}
-                className="absolute -bottom-3 left-0 h-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"
-              />
+          {/* MAIN HEADING */}
+          <h1
+            id="hero-heading"
+            className="text-[30px] font-bold leading-[1.15] tracking-tight text-slate-900 dark:text-white sm:text-6xl sm:leading-[1.08] lg:text-[76px]"
+          >
+            Learn Today.
+            <span className="block text-blue-700 dark:text-blue-200">
+              Build Tomorrow.
             </span>
           </h1>
 
-          {/* Text */}
-          <p className="text-md md:text-lg text-slate-700 dark:text-slate-300 mb-10 max-w-2xl leading-relaxed">
-            <strong>The Indus Karakuram School:</strong> A modern learning
-            space where creativity meets technology. We prepare students
-            for the future with smart education and innovation.
+          {/* DESCRIPTION */}
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-700 dark:text-slate-100 sm:mt-7 sm:text-lg sm:leading-8">
+            A welcoming place where young minds are
+            encouraged to learn, explore, and grow
+            through meaningful education and strong values.
           </p>
 
-          {/* Buttons */}
-          <div className="flex flex-wrap gap-4">
-            <MagneticButton
-              onClick={() => setPage("admissions")}
-              className="bg-blue-600 text-white shadow-lg hover:shadow-xl"
-            >
-              Join Now <ArrowUpRight size={20} />
-            </MagneticButton>
+          {/* BUTTONS */}
+          <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-9 sm:flex sm:gap-4">
+            <button
+              type="button"
+              onClick={() => navigate("admissions")}
+className="inline-flex min-h-[46px] items-center justify-center sm:min-h-[54px] rounded-lg border border-slate-500/60 bg-white dark:bg-[#041225] px-3 py-3 text-xs font-semibold sm:px-8 sm:py-4 sm:text-sm text-slate-900 dark:text-white transition-colors duration-300 hover:bg-slate-100 dark:hover:bg-[#091C36] hover:border-blue-300"            >
+              Explore Admissions
+            </button>
 
             <button
-              onClick={() => setPage("about")}
-              className="group flex items-center gap-2 px-6 py-3 rounded-xl font-semibold bg-white/60 dark:bg-slate-900/60 backdrop-blur border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              type="button"
+              onClick={() => navigate("about")}
+              className="inline-flex min-h-[46px] items-center justify-center sm:min-h-[54px] rounded-lg border border-white/50 bg-white/10 px-3 py-3 text-xs font-semibold sm:px-8 sm:py-4 sm:text-sm text-slate-900 dark:text-white backdrop-blur-sm transition-colors hover:bg-white/20"
             >
-              Explore
-              <ArrowRight
-                size={18}
-                className="group-hover:translate-x-1 transition-transform"
-              />
+              Discover Our School
             </button>
           </div>
+        </motion.div>
+
+        {/* TRANSPARENT FEATURE CARDS */}
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.15 }}
+          className="mt-8 grid gap-2 sm:mt-16 sm:grid-cols-3 sm:gap-4 lg:mt-20"
+        >
+          {features.map((feature) => {
+            const Icon = feature.icon;
+
+            return (
+              <div
+                key={feature.title}
+className="grid grid-cols-[36px_1fr] items-center gap-x-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:block sm:p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg dark:border-[#355477] dark:bg-[#041225] dark:shadow-none dark:hover:border-blue-400/50"              >
+                <Icon
+                  size={25}
+                  className="row-span-2 mb-0 text-blue-700 dark:text-blue-200 sm:mb-5"
+                  aria-hidden="true"
+                />
+
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white sm:text-base">
+                  {feature.title}
+                </h3>
+
+                <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-200 sm:mt-2 sm:text-sm">
+                  {feature.description}
+                </p>
+              </div>
+            );
+          })}
         </motion.div>
       </div>
     </section>

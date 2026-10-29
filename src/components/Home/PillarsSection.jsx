@@ -1,80 +1,105 @@
-import React from "react";
-import BentoCard from "./BentoCard";
-import { Zap, Heart, Shield, ArrowRight } from "lucide-react";
+
+import { motion, useReducedMotion } from "framer-motion";
+import {
+  BookOpen,
+  HeartHandshake,
+  School,
+} from "lucide-react";
+
+const pillars = [
+  {
+    icon: BookOpen,
+    title: "Academic Excellence",
+    description:
+      "Encouraging meaningful learning, curiosity, and a strong academic foundation.",
+  },
+  {
+    icon: HeartHandshake,
+    title: "Character Building",
+    description:
+      "Helping students develop respect, responsibility, confidence, and compassion.",
+  },
+  {
+    icon: School,
+    title: "Learning Environment",
+    description:
+      "Creating a welcoming place where students feel supported and inspired to grow.",
+  },
+];
 
 const PillarsSection = () => {
-  // 1. Expanded data to include descriptions for a more complete UI
-  const data = [
-    {
-      title: "Academic Excellence",
-      icon: Zap,
-      desc: "We provide a strong academic foundation that encourages critical thinking, creativity, and lifelong learning. Our curriculum is designed to help students achieve their highest potential."
-    },
-    {
-      title: "Character Building",
-      icon: Heart,
-      desc: "We focus on developing honesty, responsibility, and respect. Our goal is to shape students into confident and ethical individuals."
-    },
-    {
-      title: "Learning Environment",
-      icon: Shield,
-      desc: "With smart classrooms and updated teaching methods, we ensure students learn in an engaging and innovative way."
-    },
-  ];
+  const reduceMotion = useReducedMotion();
 
   return (
-    <section className="container mx-auto px-6 pt-10">
+    <section className="relative bg-transparent px-5 py-10 sm:px-6 sm:py-16 lg:py-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-6 sm:gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
 
-      {/* 2. Added a Premium Section Header */}
-      <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-        <div className="max-w-2xl">
-          <span className="text-blue-600 dark:text-blue-400 font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">
-            The Foundation
-          </span>
-          <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-900 dark:text-white">
-            Our Academic Pillars.
-          </h2>
+          <motion.div
+            initial={
+              reduceMotion ? false : { opacity: 0, y: 20 }
+            }
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55 }}
+            className="flex flex-col justify-center rounded-3xl border border-slate-200 dark:border-[#526A87]/50 bg-white dark:bg-[#041225] p-5 sm:p-12"
+          >
+            <span className="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 dark:text-blue-300">
+              What We Believe
+            </span>
+
+            <h2 className="mt-4 text-2xl font-bold sm:mt-6 leading-tight tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+              Rooted in Values.
+              <span className="block text-blue-700 dark:text-blue-200">
+                Focused on Learning.
+              </span>
+            </h2>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-300 sm:mt-7 sm:text-base sm:leading-8">
+              Our approach brings together education,
+              character, and a supportive environment
+              to help young learners develop with purpose.
+            </p>
+          </motion.div>
+
+          <div className="flex flex-col justify-center">
+            {pillars.map((pillar, index) => {
+              const Icon = pillar.icon;
+
+              return (
+                <motion.div
+                  key={pillar.title}
+                  initial={
+                    reduceMotion
+                      ? false
+                      : { opacity: 0, y: 16 }
+                  }
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.5,
+                    delay: reduceMotion ? 0 : index * 0.08,
+                  }}
+                  className="flex gap-3 border-b border-slate-200 py-5 first:pt-0 last:border-b-0 dark:border-white/20 sm:gap-5 sm:py-8"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-slate-200 dark:border-[#526A87]/50 bg-white dark:bg-[#041225] text-blue-700 dark:text-blue-300">
+                    <Icon size={23} strokeWidth={1.8} />
+                  </div>
+
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white sm:text-xl">
+                      {pillar.title}
+                    </h3>
+
+                    <p className="mt-2 max-w-lg text-sm leading-6 text-slate-600 dark:text-slate-300 sm:mt-3 sm:leading-7">
+                      {pillar.description}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
-        {/* <button className="flex items-center gap-2 font-black uppercase tracking-widest text-xs text-slate-500 hover:text-blue-600 transition-colors">
-          View Curriculum <ArrowRight size={16} />
-        </button> */}
-      </div>
-
-      {/* 3. The Grid Layout */}
-      <div className="grid md:grid-cols-3 gap-6">
-        {data.map((p, i) => {
-          const Icon = p.icon;
-          return (
-            // 4. Made the card a flex column with a minimum height to look like a tall "Bento Box"
-            <BentoCard
-              key={i}
-              delay={i * 0.15}
-              className="group min-h-[320px] flex flex-col justify-between hover:-translate-y-2"
-            >
-
-              {/* 5. Styled Icon Box with hover scale */}
-              <div className="w-14 h-14 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                <Icon size={24} />
-              </div>
-
-              {/* 6. Adaptive Text content */}
-              <div>
-                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4">
-                  {p.title}
-                </h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                  {p.desc}
-                </p>
-              </div>
-
-              {/* 7. Hidden Animated Arrow that slides in on hover */}
-              <div className="absolute bottom-8 right-8 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-300 text-blue-600">
-                <ArrowRight size={24} />
-              </div>
-
-            </BentoCard>
-          );
-        })}
       </div>
     </section>
   );

@@ -1,54 +1,95 @@
-import React from "react";
-import BentoCard from "./BentoCard";
-import { Users, Award, GraduationCap, Globe } from "lucide-react";
+
+import { motion, useReducedMotion } from "framer-motion";
+import {
+  BookOpen,
+  Lightbulb,
+  HeartHandshake,
+  GraduationCap,
+} from "lucide-react";
+
+const features = [
+  {
+    icon: BookOpen,
+    title: "Quality Education",
+    description:
+      "Building a strong foundation for meaningful learning.",
+  },
+  {
+    icon: Lightbulb,
+    title: "Creative Thinking",
+    description:
+      "Encouraging curiosity, ideas, and independent thinking.",
+  },
+  {
+    icon: HeartHandshake,
+    title: "Character Building",
+    description:
+      "Helping learners grow with confidence and values.",
+  },
+  {
+    icon: GraduationCap,
+    title: "Future Ready",
+    description:
+      "Developing the skills and mindset for tomorrow.",
+  },
+];
 
 const StatsSection = () => {
-  const stats = [
-    { icon: Users, val: "100+", label: "Elite Students" },
-    { icon: Award, val: "10+", label: "Awards" },
-    { icon: GraduationCap, val: "98%", label: "Nurishment" },
-    { icon: Globe, val: "10+", label: "Partners" },
-  ];
+  const reduceMotion = useReducedMotion();
 
   return (
-    <section className="container mx-auto px-6 pt-10">
-      
-      {/* 1. Added a clean, cinematic section header */}
-      <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter">
-          By The Numbers
-        </h2>
-      </div>
+    <section className="relative bg-transparent px-5 py-16 sm:px-6 lg:py-20">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 text-center">
+          <span className="text-xs font-bold uppercase tracking-[0.18em] text-blue-700 dark:text-blue-300">
+            Why Choose TIKS
+          </span>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        {stats.map((s, i) => {
-          const Icon = s.icon;
-          return (
-            // 2. Center-aligned the card contents and added deep padding
-            <BentoCard 
-              key={i} 
-              className="text-center group flex flex-col justify-center items-center py-12" 
-              delay={i * 0.1} // 3. Staggered animation delay
-            >
-              
-              {/* 4. The Interactive Icon Box */}
-              <div className="w-16 h-16 mb-6 bg-slate-50 dark:bg-slate-800 rounded-[1.5rem] flex items-center justify-center text-blue-600 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 shadow-sm">
-                <Icon size={28} />
-              </div>
-              
-              {/* 5. Massive Number Typography */}
-              <h2 className="text-4xl md:text-5xl font-black mb-2 text-slate-900 dark:text-white tracking-tighter">
-                {s.val}
-              </h2>
-              
-              {/* 6. Premium tracking on the label */}
-              <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-slate-400">
-                {s.label}
-              </p>
+          <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl lg:text-5xl">
+            A Better Place to Learn & Grow.
+          </h2>
 
-            </BentoCard>
-          );
-        })}
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300">
+            An approach to education that values
+            learning, creativity, and personal growth.
+          </p>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+
+            return (
+              <motion.div
+                key={feature.title}
+                initial={
+                  reduceMotion
+                    ? false
+                    : { opacity: 0, y: 20 }
+                }
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.5,
+                  delay: reduceMotion ? 0 : index * 0.08,
+                }}
+                className="flex h-full flex-col rounded-2xl border border-slate-200 dark:border-[#526A87]/50 bg-white dark:bg-[#041225] p-7 transition-colors hover:border-blue-400/60"
+              >
+                <div className="mb-7 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 dark:bg-[#102B53] text-blue-700 dark:text-blue-300">
+                  <Icon size={24} strokeWidth={1.8} />
+                </div>
+
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  {feature.title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                  {feature.description}
+                </p>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

@@ -1,230 +1,404 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
-import * as Icons from 'lucide-react';
+import { useRef } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
+import {
+  ArrowRight,
+  BookOpen,
+  Calculator,
+  GraduationCap,
+  HeartHandshake,
+  Languages,
+  Lightbulb,
+  Microscope,
+  Palette,
+  School,
+  Users,
+  Globe2,
+  Monitor,
+  Sparkles,
+  CheckCircle2,
+} from "lucide-react";
 
-// Consolidated icon destructuring with fallbacks
-const { 
-  BookOpen, Cpu, Atom, Layers, Palette, Microscope, 
-  Binary, Globe, Zap, Sparkles, ChevronRight, 
-  ArrowUpRight, Quote, Code, Component, FlaskConical,
-  HelpCircle
-} = Icons;
+const academicLevels = [
+  {
+    number: "01",
+    title: "Early Years",
+    grades: "Playgroup • Nursery • KG",
+    icon: Sparkles,
+    description:
+      "A welcoming start to education, helping young children build confidence, communication, curiosity, and early learning skills.",
+  },
+  {
+    number: "02",
+    title: "Primary School",
+    grades: "Classes 1–5",
+    icon: BookOpen,
+    description:
+      "Building strong foundations in reading, writing, mathematics, communication, and essential academic understanding.",
+  },
+  {
+    number: "03",
+    title: "Middle School",
+    grades: "Classes 6–8",
+    icon: Users,
+    description:
+      "Encouraging independent learning, deeper subject knowledge, critical thinking, and responsible study habits.",
+  },
+  {
+    number: "04",
+    title: "Secondary School",
+    grades: "Classes 9–10 • Matric",
+    icon: GraduationCap,
+    description:
+      "Supporting students as they strengthen subject knowledge, prepare for examinations, and plan their next educational steps.",
+  },
+];
 
-// --- REFINED UI UTILITIES ---
+const subjects = [
+  { name: "English", icon: BookOpen },
+  { name: "Urdu", icon: Languages },
+  { name: "Mathematics", icon: Calculator },
+  { name: "Science", icon: Microscope },
+  { name: "Islamiat", icon: HeartHandshake },
+  { name: "Social Studies", icon: Globe2 },
+  { name: "Computer Studies", icon: Monitor },
+  { name: "Pakistan Studies", icon: School },
+];
 
-const SectionLabel = ({ children }) => (
+const Reveal = ({ children, className = "", delay = 0 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 10 }}
+    initial={{ opacity: 0, y: 24 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-blue-600/5 text-blue-600 dark:text-blue-400 text-[9px] font-black uppercase tracking-[0.4em] mb-12 border border-blue-600/10 shadow-sm"
+    viewport={{ once: true, amount: 0.1 }}
+    transition={{ duration: 0.6, delay }}
+    className={className}
   >
-    <div className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
     {children}
   </motion.div>
 );
 
-const Curriculum = ({ setPage }) => {
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: containerRef });
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+const SectionLabel = ({ children }) => (
+  <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-blue-400">
+    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400" />
+    {children}
+  </span>
+);
 
-  // Helper to safely render icons to prevent ReferenceErrors
-  const SafeIcon = ({ icon: IconComponent, ...props }) => {
-    const ComponentToRender = IconComponent || HelpCircle;
-    return <ComponentToRender {...props} />;
+const PhotoPlaceholder = ({ label, description, icon: Icon = School }) => (
+  <div className="relative flex aspect-[4/3] w-full min-w-0 items-center justify-center overflow-hidden rounded-[1.75rem] border border-white/10 bg-gradient-to-br from-[#172B49] via-[#101E33] to-[#0B1220]">
+    <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-500/10 blur-3xl" />
+    <div className="relative z-10 flex max-w-xs flex-col items-center px-6 text-center">
+      <div className="rounded-2xl border border-blue-400/20 bg-blue-400/10 p-5">
+        <Icon size={38} strokeWidth={1.5} className="text-blue-300" />
+      </div>
+      <p className="mt-6 text-lg font-semibold text-white">{label}</p>
+      <p className="mt-3 text-sm leading-6 text-slate-400">
+        {description}
+      </p>
+    </div>
+    <span className="absolute bottom-5 left-5 rounded-lg border border-white/10 bg-slate-950/70 px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-slate-300">
+      School Photo Coming Soon
+    </span>
+  </div>
+);
+
+export default function Curriculum({ setPage }) {
+  const pageRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: pageRef,
+    offset: ["start start", "end end"],
+  });
+
+  const progress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+  });
+
+  const openAdmissions = () => {
+    if (typeof setPage === "function") {
+      setPage("admissions");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (
-    <div ref={containerRef} className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-1000 selection:bg-blue-600 selection:text-white">
-      
-      {/* 1. KINETIC HERO */}
-      <section className="relative min-h-screen flex items-center justify-center pt-24 px-6 overflow-hidden">
-        <div className="container mx-auto text-center z-10">
-          <SectionLabel>Academic Blueprint v4.0</SectionLabel>
-          <motion.h1 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-6xl md:text-[10vw] font-black tracking-tighter leading-[0.8] mb-10"
-          >
-            THE <span className="text-blue-600">GUILDS.</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg md:text-2xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium leading-tight mb-12"
-          >
-            We don't teach subjects; we master disciplines. Our curriculum is an interconnected web of logic, creativity, and ethical inquiry.
-          </motion.p>
-          <div className="flex justify-center gap-4">
-             <motion.div animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="w-px h-24 bg-gradient-to-b from-blue-600 to-transparent" />
-          </div>
-        </div>
-      </section>
+    <div
+      ref={pageRef}
+      className="min-w-0 overflow-x-clip bg-slate-950 text-slate-100"
+    >
+      {/* HERO */}
+      <section className="relative flex min-h-[75vh] items-center overflow-hidden bg-[#0B1220] px-5 pb-20 pt-36 sm:px-6 lg:pt-40">
+        <div className="pointer-events-none absolute right-0 top-0 h-80 w-80 rounded-full bg-blue-600/10 blur-3xl" />
 
-      {/* 2. THE ACADEMIC GUILDS (School Levels) */}
-      <section className="container mx-auto px-6 py-40">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {[
-            { 
-              level: "The Foundation", 
-              title: "Primary Guild", 
-              age: "Grades 6–8",
-              icon: Layers,
-              desc: "Focusing on cognitive plasticity, linguistic depth, and the fundamentals of algorithmic thinking."
-            },
-            { 
-              level: "The Expansion", 
-              title: "Secondary Nexus", 
-              age: "Grades 9–10",
-              icon: Component,
-              desc: "Deep integration of complex systems, theoretical physics, and world-building through the arts."
-            },
-            { 
-              level: "The Mastery", 
-              title: "Advanced Core", 
-              age: "Grades 11–12",
-              icon: Cpu,
-              desc: "Specialized pathways in Bio-Genetics, Quantum Logic, and Global Diplomacy under expert mentorship."
-            }
-          ].map((guild, i) => (
-            <motion.div 
-              key={guild.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="p-10 rounded-[3rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 shadow-xl hover:border-blue-600/50 transition-all duration-500 group"
-            >
-              <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center mb-8 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                <SafeIcon icon={guild.icon} size={32} />
-              </div>
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600 mb-2 block">{guild.level}</span>
-              <h3 className="text-3xl font-black mb-4 tracking-tighter">{guild.title}</h3>
-              <p className="text-slate-500 dark:text-slate-400 font-medium mb-8 leading-relaxed">{guild.desc}</p>
-              <div className="flex items-center justify-between pt-8 border-t border-slate-100 dark:border-white/5">
-                <span className="text-xs font-black uppercase tracking-widest text-slate-400">{guild.age}</span>
-                <ChevronRight size={18} className="text-blue-600" />
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+        <div className="relative z-10 mx-auto w-full max-w-7xl">
+          <Reveal>
+            <SectionLabel>Academics at TIKS</SectionLabel>
 
-      {/* 3. INNOVATION LABS (High Contrast Staggered) */}
-      <section className="container mx-auto px-6 py-40">
-        <SectionLabel>Specialized Labs</SectionLabel>
-        <div className="space-y-32 mt-20">
-          {[
-            {
-              title: "Neural Robotics Lab",
-              icon: Zap,
-              image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200",
-              desc: "Students build and program autonomous systems that respond to biometric feedback loops."
-            },
-            {
-              title: "Bio-Genetics Suite",
-              icon: Microscope,
-              // Fixed: Swapped broken URL for a verified laboratory image
-              image: "https://images.unsplash.com/photo-1518152006812-edab29b069ac?auto=format&fit=crop&q=80&w=1200",
-              desc: "Exploring the code of life through CRISPR simulations and advanced molecular biology studies."
-            }
-          ].map((lab, i) => (
-            <div key={lab.title} className={`flex flex-col ${i % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-16 md:gap-24`}>
-              <motion.div 
-                initial={{ opacity: 0, x: i % 2 === 0 ? -40 : 40 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                className="flex-1 space-y-8"
+            <h1 className="mt-8 max-w-5xl text-xl font-bold leading-[1.12] tracking-tight sm:text-6xl lg:text-7xl">
+              Learning Begins Here.
+              <span className="mt-2 block text-blue-400">
+                Growing Every Day.
+              </span>
+            </h1>
+
+            <p className="mt-7 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+              From Playgroup and Nursery to Matric, The Indus
+              Karakuram School supports each stage of a child's
+              educational journey through knowledge, confidence,
+              curiosity, and personal growth.
+            </p>
+
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={openAdmissions}
+                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-xl bg-blue-600 px-7 py-4 text-sm font-semibold text-white transition-colors hover:bg-blue-500"
               >
-                <div className="p-4 bg-blue-600 text-white rounded-2xl w-fit">
-                   <SafeIcon icon={lab.icon} size={28} />
-                </div>
-                <h3 className="text-4xl md:text-6xl font-black tracking-tighter leading-none">{lab.title}</h3>
-                <p className="text-xl text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{lab.desc}</p>
-                <button className="flex items-center gap-2 text-blue-600 font-black uppercase tracking-widest text-[10px] group">
-                  Lab Protocol Docs <ArrowUpRight size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                </button>
-              </motion.div>
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                className="flex-1 aspect-video lg:aspect-square rounded-[3rem] overflow-hidden shadow-3xl border border-slate-200 dark:border-white/5 relative group"
+                Explore Admissions
+                <ArrowRight size={18} />
+              </button>
+
+              <a
+                href="#academic-levels"
+                className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/20 px-7 py-4 text-sm font-semibold text-white transition-colors hover:bg-white/10"
               >
-                <img 
-                  src={lab.image} 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105" 
-                  alt={lab.title}
-                  onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1532187875605-1ef6c747094d?auto=format&fit=crop&q=80&w=1200" }}
-                />
-                <div className="absolute inset-0 bg-blue-600/10 mix-blend-overlay" />
-              </motion.div>
+                Explore Academic Levels
+              </a>
             </div>
-          ))}
+          </Reveal>
         </div>
       </section>
 
-      {/* 4. THE MATRIX (Grid Matrix of Subjects) */}
-      <section className="py-40 bg-slate-900 text-white overflow-hidden relative">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
-        <div className="container mx-auto px-6 relative z-10">
-          <SectionLabel>The Discipline Matrix</SectionLabel>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20">
-            {[
-              { name: "Quantum Mechanics", icon: Atom },
-              { name: "Advanced Syntax", icon: Code },
-              { name: "Global Ethics", icon: Globe },
-              { name: "Algorithmic Logic", icon: Binary },
-              { name: "Digital Arts", icon: Palette },
-              { name: "Theoretical Math", icon: Component },
-              { name: "Bio-Informatics", icon: FlaskConical },
-              { name: "Future History", icon: BookOpen }
-            ].map((subject, i) => (
-              <motion.div 
-                key={subject.name}
-                whileHover={{ backgroundColor: "rgba(37, 99, 235, 0.15)", y: -5 }}
-                className="p-8 rounded-[2rem] border border-white/5 bg-white/5 flex flex-col items-center text-center transition-all duration-500"
-              >
-                <SafeIcon icon={subject.icon} size={24} className="text-blue-500 mb-6" />
-                <h4 className="text-sm font-black uppercase tracking-widest">{subject.name}</h4>
-              </motion.div>
-            ))}
+      {/* ACADEMIC LEVELS */}
+      <section
+        id="academic-levels"
+        className="scroll-mt-24 px-5 py-10 sm:py-20 sm:px-6 lg:py-28"
+      >
+        <div className="mx-auto max-w-7xl">
+          <Reveal>
+            <SectionLabel>Our Academic Structure</SectionLabel>
+            <h2 className="mt-7 text-xl font-bold tracking-tight sm:text-5xl">
+              Every Stage Matters.
+            </h2>
+            <p className="mt-5 max-w-2xl leading-8 text-slate-300">
+              A learning journey that begins in the early years
+              and continues through secondary education.
+            </p>
+          </Reveal>
+
+          <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {academicLevels.map((level, index) => {
+              const Icon = level.icon;
+
+              return (
+                <Reveal key={level.title} delay={index * 0.06}>
+                  <div className="flex h-full min-w-0 flex-col rounded-[1.75rem] border border-white/10 bg-slate-900 p-6 transition-colors hover:border-blue-500/40 sm:p-8">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="rounded-xl bg-blue-500/10 p-3 text-blue-400">
+                        <Icon size={25} />
+                      </div>
+                      <span className="text-xs font-bold text-slate-500">
+                        {level.number}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-8 text-xl font-bold">
+                      {level.title}
+                    </h3>
+                    <p className="mt-3 text-sm font-semibold text-blue-400">
+                      {level.grades}
+                    </p>
+                    <p className="mt-5 flex-1 text-sm leading-7 text-slate-300">
+                      {level.description}
+                    </p>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* 5. CTA: JOURNEY OF MASTERY */}
-      <section className="container mx-auto px-6 py-60 text-center">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          className="max-w-4xl mx-auto space-y-12"
-        >
-          <Sparkles size={60} className="mx-auto text-blue-600 animate-pulse" />
-          <h2 className="text-6xl md:text-9xl font-black tracking-tighter leading-none">MASTER THE <span className="text-blue-600">UNSEEN.</span></h2>
-          <p className="text-xl text-slate-500 dark:text-slate-400 font-medium">Ready to step into the future of learning? Join a Guild today.</p>
-          <div className="flex flex-wrap justify-center gap-6">
-            <button 
-              onClick={() => setPage('admissions')}
-              className="px-12 py-6 bg-blue-600 text-white rounded-full font-black uppercase tracking-[0.4em] text-[10px] shadow-2xl hover:scale-105 transition-all"
-            >
-              Start Application
-            </button>
-            <button className="px-12 py-6 border border-slate-200 dark:border-white/10 rounded-full font-black uppercase tracking-[0.4em] text-[10px] hover:bg-slate-100 dark:hover:bg-white/5 transition-all">
-              Download Syllabus
-            </button>
-          </div>
-        </motion.div>
+      {/* TEACHING APPROACH */}
+      <section className="border-y border-white/10 bg-[#0B1220] px-5 py-10 sm:py-20 sm:px-6 lg:py-28">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2 lg:gap-20">
+          <Reveal>
+            <PhotoPlaceholder
+              icon={School}
+              label="Classroom Learning"
+              description="Space reserved for an original TIKS classroom photograph."
+            />
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <SectionLabel>Our Teaching Approach</SectionLabel>
+
+            <h2 className="mt-7 text-xl font-bold leading-tight tracking-tight sm:text-5xl">
+              Building Understanding,
+              <span className="block text-blue-400">
+                Not Just Memorization.
+              </span>
+            </h2>
+
+            <p className="mt-6 leading-8 text-slate-300">
+              Strong academic foundations begin with clear
+              explanations, thoughtful practice, and an
+              environment where children feel encouraged to learn.
+            </p>
+
+            <div className="mt-8 space-y-4">
+              {[
+                "Conceptual understanding and regular practice",
+                "Communication and classroom participation",
+                "Confidence, curiosity, and independent thinking",
+              ].map((item) => (
+                <div key={item} className="flex items-start gap-3">
+                  <CheckCircle2
+                    size={20}
+                    className="mt-1 shrink-0 text-blue-400"
+                  />
+                  <span className="leading-7 text-slate-300">{item}</span>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
       </section>
 
-      {/* Global Scroll Scrubber */}
-      <motion.div 
-        className="fixed top-0 left-0 bottom-0 w-1 bg-blue-600 z-[100] origin-top" 
-        style={{ scaleY: smoothProgress }} 
+      {/* BEYOND THE CLASSROOM */}
+      <section className="px-5 py-10 sm:py-20 sm:px-6 lg:py-28">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2 lg:gap-20">
+          <Reveal className="lg:order-2">
+            <PhotoPlaceholder
+              icon={Palette}
+              label="Student Development"
+              description="Space reserved for an original TIKS student activity photograph."
+            />
+          </Reveal>
+
+          <Reveal className="lg:order-1">
+            <SectionLabel>Beyond the Classroom</SectionLabel>
+
+            <h2 className="mt-7 text-xl font-bold leading-tight tracking-tight sm:text-5xl">
+              Education Is More
+              <span className="block text-blue-400">
+                Than Textbooks.
+              </span>
+            </h2>
+
+            <p className="mt-6 leading-8 text-slate-300">
+              Children's growth involves more than academic
+              lessons. Reading, creative expression, collaboration,
+              and positive relationships all contribute to
+              their overall development.
+            </p>
+
+            <p className="mt-5 leading-8 text-slate-300">
+              We value opportunities that encourage students
+              to communicate, ask questions, work with others,
+              and discover their interests.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              {["Creativity", "Teamwork", "Confidence", "Curiosity"].map(
+                (item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border border-white/10 bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-300"
+                  >
+                    {item}
+                  </span>
+                )
+              )}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* CORE SUBJECTS */}
+      <section className="border-y border-white/10 bg-[#0B1220] px-5 py-10 sm:py-20 sm:px-6 lg:py-28">
+        <div className="mx-auto max-w-7xl">
+          <Reveal>
+            <SectionLabel>Areas of Study</SectionLabel>
+
+            <h2 className="mt-7 text-xl font-bold tracking-tight sm:text-5xl">
+              Building Knowledge
+              <span className="block text-blue-400">
+                Across Subjects.
+              </span>
+            </h2>
+
+            <p className="mt-5 max-w-2xl leading-8 text-slate-300">
+              Key subject areas commonly found across school
+              education. Specific subjects and combinations
+              depend on the student's grade and the school's
+              approved curriculum.
+            </p>
+          </Reveal>
+
+          <div className="mt-12 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+            {subjects.map((subject, index) => {
+              const Icon = subject.icon;
+
+              return (
+                <Reveal key={subject.name} delay={(index % 4) * 0.04}>
+                  <div className="flex h-full min-w-0 flex-col items-center justify-center rounded-2xl border border-white/10 bg-slate-900 px-3 py-7 text-center transition-colors hover:border-blue-500/40 sm:px-6 sm:py-9">
+                    <Icon
+                      size={27}
+                      className="mb-5 text-blue-400"
+                      strokeWidth={1.6}
+                    />
+                    <h3 className="break-words text-sm font-semibold leading-6 sm:text-base">
+                      {subject.name}
+                    </h3>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className="px-5 py-10 sm:py-20 text-center sm:px-6 lg:py-28">
+        <Reveal className="mx-auto max-w-3xl">
+          <SectionLabel>Begin Your Journey</SectionLabel>
+
+          <Lightbulb
+            size={42}
+            className="mx-auto mt-8 text-blue-400"
+            strokeWidth={1.5}
+          />
+
+          <h2 className="mt-6 text-xl font-bold leading-tight tracking-tight sm:text-5xl">
+            A Strong Foundation
+            <span className="block text-blue-400">
+              for a Brighter Future.
+            </span>
+          </h2>
+
+          <p className="mx-auto mt-6 max-w-2xl leading-8 text-slate-300">
+            Learn more about the admission process at
+            The Indus Karakuram School.
+          </p>
+
+          <button
+            type="button"
+            onClick={openAdmissions}
+            className="mt-9 inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-xl bg-blue-600 px-8 py-4 text-sm font-semibold text-white transition-colors hover:bg-blue-500 sm:w-auto"
+          >
+            Explore Admissions
+            <ArrowRight size={18} />
+          </button>
+        </Reveal>
+      </section>
+
+      {/* SCROLL PROGRESS */}
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none fixed bottom-0 left-0 top-0 z-[100] w-1 origin-top bg-blue-600"
+        style={{ scaleY: progress }}
       />
-
     </div>
   );
-};
-
-export default Curriculum;
+}

@@ -1,145 +1,218 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { GraduationCap, Menu, X, Sun, Moon } from "lucide-react";
-import Logo from "../../assets/Logo.png";
 
+import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
+import Logo from "../../assets/Logo.png";
 
 const Header = ({
   page,
   setPage,
-  theme,
-  setTheme,
+
   scrolled,
   isMenuOpen,
   setIsMenuOpen,
   navLinks,
 }) => {
+  const mainLinks = navLinks.filter(
+    (link) =>
+      link.id !== "admissions" &&
+      link.id !== "portal" &&
+      link.id !== "events"
+  );
+
+  const navigate = (id) => {
+    setPage(id);
+    setIsMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen
+      ? "hidden"
+      : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
   return (
     <>
-      {/* --- DESKTOP DYNAMIC ISLAND HEADER --- */}
+      {/* MAIN NAVBAR */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 flex justify-center pt-0 transition-all duration-500 ${scrolled ? "pt-2" : ""}`}
+        className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${
+          scrolled
+            ? "border-slate-200 bg-white/95 shadow-md backdrop-blur-lg dark:border-blue-500/25 dark:bg-[#0B1220]"
+            : "border-slate-200/70 bg-white/95 backdrop-blur-md dark:border-blue-500/25 dark:bg-[#0B1220]"
+        }`}
       >
-        <div
-          className={`flex items-center justify-between gap-12 px-8 py-4 rounded-full border transition-all duration-500 ${
-            scrolled
-              ? "bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border-slate-200 dark:border-white/10 shadow-2xl w-[95%] md:w-[85%]"
-              : "bg-transparent border-transparent w-full container mx-auto"
-          }`}
-        >
-          {/* Logo Section */}
-          <div
-            onClick={() => setPage("home")}
-            className="flex items-center gap-2 cursor-pointer group"
-          >
-            <div className="w-15 h-15 rounded-lg flex items-center justify-center text-white group-hover:rotate-12 transition-transform">
-              <img
-            src={Logo}
-                alt="School Logo"
-                className="w-14 h-14 object-contain rounded-full"
-              />
-            </div>
-            <span className="font-black text-xs tracking-tighter uppercase text-slate-500 dark:text-white">
-              The Indus Karakuram School
-            </span>
-          </div>
+        <div className="mx-auto flex h-[84px] max-w-7xl items-center justify-between gap-5 px-5 sm:px-6 lg:px-8">
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-6">
-            {navLinks
-              .filter((l) => !l.isAction)
-              .map((link) => (
-                <button
-                  key={link.id}
-                  onClick={() => setPage(link.id)}
-                  className={`text-[12px] font-black uppercase tracking-widest transition-all hover:text-blue-600 ${
-                    page === link.id ? "text-blue-600" : "text-slate-400"
-                  }`}
-                >
-                  {link.label}
-                </button>
-              ))}
+          {/* BRAND */}
+          <button
+            type="button"
+            onClick={() => navigate("home")}
+            aria-label="Go to TIKS homepage"
+            className="flex min-w-0 shrink-0 items-center gap-3 text-left"
+          >
+            <img
+              src={Logo}
+              alt="TIKS Logo"
+              className="h-14 w-14 shrink-0 rounded-full object-cover"
+            />
+
+            <div className="hidden min-w-0 sm:block">
+              <span className="block text-xl font-extrabold leading-tight tracking-tight text-slate-950 dark:text-white">
+                TIKS
+              </span>
+
+              <span className="block max-w-[190px] text-[10px] font-semibold uppercase leading-4 tracking-[0.04em] text-slate-600 dark:text-slate-300">
+                The Indus Karakuram School
+              </span>
+            </div>
+          </button>
+
+          {/* DESKTOP NAVIGATION */}
+          <nav
+            aria-label="Main navigation"
+            className="hidden items-center gap-4 lg:flex xl:gap-7"
+          >
+            {mainLinks.map((link) => (
+              <button
+                key={link.id}
+                type="button"
+                onClick={() => navigate(link.id)}
+                aria-current={
+                  page === link.id ? "page" : undefined
+                }
+                className={`relative whitespace-nowrap py-3 text-[14px] font-semibold tracking-[0.01em] transition-colors duration-200 ${
+                  page === link.id
+                    ? "text-blue-700 dark:text-blue-400"
+                    : "text-slate-800 hover:text-blue-700 dark:text-slate-100 dark:hover:text-blue-400"
+                }`}
+              >
+                {link.label}
+
+                {page === link.id && (
+                  <span className="absolute bottom-1 left-0 h-[2px] w-full rounded-full bg-blue-700 dark:bg-blue-400" />
+                )}
+              </button>
+            ))}
           </nav>
 
-          {/* Actions (Theme & Mobile Toggle) */}
-          <div className="flex items-center gap-4">
+          {/* ACTIONS */}
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+
+
+            {/* ADMISSIONS BUTTON */}
             <button
-              onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
-              className="p-2 text-slate-400 hover:text-blue-600 transition-colors"
+              type="button"
+              onClick={() => navigate("admissions")}
+              className={`hidden items-center justify-center rounded-lg px-5 py-3 text-sm font-bold transition-colors sm:inline-flex ${
+                page === "admissions"
+                  ? "bg-blue-900 text-white dark:bg-blue-600"
+                  : "bg-blue-700 text-white hover:bg-blue-800"
+              }`}
             >
-              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+              Admissions
             </button>
 
+            {/* MOBILE MENU BUTTON */}
             <button
-              onClick={() => setPage("portal")}
-              className="hidden md:flex px-6 py-2 bg-blue-600 text-white rounded-full font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-transform"
-            >
-              TIKS Portal
-            </button>
-
-            <button
-              className="lg:hidden p-2 text-slate-900 dark:text-white"
+              type="button"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={
+                isMenuOpen ? "Close menu" : "Open menu"
+              }
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-navigation"
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 lg:hidden"
             >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMenuOpen ? (
+                <X size={24} />
+              ) : (
+                <Menu size={24} />
+              )}
             </button>
           </div>
         </div>
       </header>
 
-      {/* --- INTEGRATED MOBILE MENU OVERLAY --- */}
+      {/* MOBILE NAVIGATION */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[60] bg-white dark:bg-slate-950 flex flex-col justify-center p-12"
+            id="mobile-navigation"
+            initial={{ opacity: 0, y: -15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.22 }}
+            className="fixed inset-0 z-[60] overflow-y-auto bg-white px-6 pb-10 pt-24 dark:bg-[#0B1220] lg:hidden"
           >
-            {/* Close Button */}
+            {/* CLOSE BUTTON */}
             <button
+              type="button"
               onClick={() => setIsMenuOpen(false)}
-              className="absolute top-10 right-10 text-slate-400 hover:text-blue-600 transition-colors"
+              aria-label="Close navigation"
+              className="absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-lg text-slate-900 dark:text-white"
             >
-              <X size={40} />
+              <X size={26} />
             </button>
 
-            {/* Menu Links */}
-            <div className="space-y-6">
-              {navLinks.map((link, i) => (
-                <motion.div
-                  key={link.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 + 0.1 }}
-                >
+            <div className="mx-auto max-w-lg">
+
+              {/* MOBILE BRAND */}
+              <div className="mb-8 flex items-center gap-3 border-b border-slate-200 pb-6 dark:border-blue-500/25">
+                <img
+                  src={Logo}
+                  alt="TIKS Logo"
+                  className="h-14 w-14 rounded-full object-cover"
+                />
+
+                <div>
+                  <h2 className="text-lg font-extrabold text-slate-900 dark:text-white">
+                    TIKS
+                  </h2>
+
+                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    The Indus Karakuram School
+                  </p>
+                </div>
+              </div>
+
+              {/* MOBILE LINKS */}
+              <nav
+                aria-label="Mobile navigation"
+                className="flex flex-col"
+              >
+                {mainLinks.map((link) => (
                   <button
-                    onClick={() => {
-                      setPage(link.id);
-                      setIsMenuOpen(false); // Auto-close menu on click
-                    }}
-                    className={`block text-5xl md:text-7xl font-black tracking-tighter text-left w-full transition-colors ${
+                    key={link.id}
+                    type="button"
+                    onClick={() => navigate(link.id)}
+                    aria-current={
+                      page === link.id ? "page" : undefined
+                    }
+                    className={`border-b border-slate-100 py-4 text-left text-xl font-semibold transition-colors dark:border-blue-500/25 ${
                       page === link.id
-                        ? "text-blue-600"
-                        : "text-slate-900 dark:text-white hover:text-blue-400"
+                        ? "text-blue-700 dark:text-blue-400"
+                        : "text-slate-900 dark:text-white"
                     }`}
                   >
                     {link.label}
                   </button>
-                </motion.div>
-              ))}
-            </div>
+                ))}
+              </nav>
 
-            {/* Mobile Footer Branding */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="absolute bottom-12 left-12 text-[10px] font-black uppercase tracking-widest text-slate-400"
-            >
-              The Indus Karakuram School <br />
-              Version 4.2.0
-            </motion.div>
+              {/* MOBILE ADMISSIONS */}
+              <button
+                type="button"
+                onClick={() => navigate("admissions")}
+                className="mt-8 w-full rounded-lg bg-blue-700 px-6 py-4 text-sm font-bold text-white transition-colors hover:bg-blue-800"
+              >
+                Explore Admissions
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
