@@ -300,7 +300,7 @@ const About = ({ setPage }) => {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <SectionLabel>School Leadership</SectionLabel>
+            <SectionLabel>From the Principal's Desk</SectionLabel>
 
             <Quote
               size={48}
@@ -308,31 +308,48 @@ const About = ({ setPage }) => {
             />
 
             <h2 className="mt-5 text-xl font-bold leading-tight tracking-tight sm:text-5xl">
-              Leadership that puts
+              A Message from
               <span className="block text-blue-600 dark:text-blue-400">
-                students first.
+                Our Principal.
               </span>
             </h2>
 
             <p className="mt-7 text-base leading-8 text-slate-600 dark:text-slate-300">
-              Strong school leadership helps create an
-              environment where students feel supported,
-              teachers are valued, and learning remains
-              the central priority.
+              At The Indus Karakuram School, we believe that every
+              child deserves the opportunity to learn, grow, and
+              discover their true potential. Education is not only
+              about academic achievement, but also about building
+              character, confidence, kindness, and responsibility.
             </p>
 
             <p className="mt-5 leading-8 text-slate-600 dark:text-slate-300">
-              We believe a successful school community
-              grows through communication, responsibility,
-              and a shared commitment to education.
+              Our aim is to provide a safe, supportive, and inspiring
+              environment where every student feels valued and every
+              teacher makes a meaningful difference. We believe that
+              a strong partnership between parents, teachers, and
+              the school is essential for every child's success.
             </p>
 
-            <div className="mt-9 border-l-2 border-blue-600 pl-5">
+            <p className="mt-5 leading-8 text-slate-600 dark:text-slate-300">
+              Together, we strive to nurture curious learners,
+              responsible individuals, and confident future leaders
+              who are prepared to make a positive difference in
+              society.
+            </p>
+
+            <div className="mt-8 border-l-2 border-blue-600 pl-5">
+              <p className="text-lg font-semibold italic leading-8 text-slate-800 dark:text-slate-100">
+                "Our greatest achievement is not only what our
+                students learn, but who they become."
+              </p>
+            </div>
+
+            <div className="mt-8">
               <p className="font-bold">
-                The Indus Karakuram School
+                Principal
               </p>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                School Leadership
+                The Indus Karakuram School
               </p>
             </div>
           </Reveal>
