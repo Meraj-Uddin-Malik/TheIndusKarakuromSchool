@@ -5,6 +5,7 @@ import {
   School, Users, UserRound, CheckCircle2
 } from "lucide-react";
 
+import facultyHeroImage from "../assets/Tiks.jpeg";
 const Reveal = ({ children, className = "", delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 24 }}
@@ -59,6 +60,18 @@ export default function Faculty({ setPage }) {
     <div ref={pageRef} className="min-w-0 overflow-x-clip bg-slate-950 text-slate-100">
       {/* HERO */}
       <section className="relative flex min-h-[72vh] items-center overflow-hidden bg-[#0B1220] px-5 pb-20 pt-36 sm:px-6 lg:pt-40">
+        {/* Faculty hero background image */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <img
+            src={facultyHeroImage}
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full scale-105 object-cover opacity-40 blur-[3px]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/95 via-[#0B1220]/80 to-[#0B1220]/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0B1220]/90 via-transparent to-transparent" />
+        </div>
+
         <div className="pointer-events-none absolute right-0 top-0 h-80 w-80 rounded-full bg-blue-600/10 blur-3xl" />
         <div className="relative z-10 mx-auto w-full max-w-7xl">
           <Reveal>
