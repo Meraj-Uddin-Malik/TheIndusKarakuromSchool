@@ -8,9 +8,10 @@ import {
 
 // Replace these values only with confirmed school information.
 const schoolContact = {
-  email: "",
-  phone: "",
-  address: "9, Naval Colony, Karachi, 75760",
+  email: "info@tikschool.com",
+  phone: "0314 2956202",
+  phone2: "0339 1148900",
+  address: "Plot 13, Street 9, Sector 4, Behind Quba Mosque, HBCHS Naval Colony, Hub River Road, Karachi West, Pakistan",
   officeHours: "",
   formspreeEndpoint: "",
 };
@@ -25,6 +26,14 @@ const infoCards = [
     href: schoolContact.phone
       ? `tel:${schoolContact.phone.replace(/\s/g, "")}`
       : null,
+  },
+  {
+    label: "Call the School (Alternate)",
+    detail: schoolContact.phone2,
+    fallback: "Alternate number unavailable",
+    description: "Alternative number for school inquiries.",
+    icon: Phone,
+    href: `tel:${schoolContact.phone2.replace(/\\s/g, "")}`,
   },
   {
     label: "Email the Office",
@@ -42,7 +51,7 @@ const infoCards = [
     fallback: "School address to be confirmed",
     description: "Contact the office before planning a visit.",
     icon: MapPin,
-    href: null,
+    href: "https://www.google.com/maps/dir/?api=1&destination=Plot%2013%2C%20Street%209%2C%20Sector%204%2C%20Behind%20Quba%20Mosque%2C%20HBCHS%20Naval%20Colony%2C%20Hub%20River%20Road%2C%20Karachi%20West%2C%20Pakistan",
   },
 ];
 
@@ -150,7 +159,7 @@ export default function Contact({ setPage }) {
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
-            {infoCards.map((item, index) => {
+            {infoCards.filter((item) => item.label !== "Visit the School").map((item, index) => {
               const Icon = item.icon;
               return (
                 <motion.div
@@ -180,6 +189,44 @@ export default function Contact({ setPage }) {
                 </motion.div>
               );
             })}
+
+            {infoCards.filter((item) => item.label === "Visit the School").map((item) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="relative overflow-hidden rounded-3xl border border-blue-400/30 bg-gradient-to-br from-[#102C52] via-[#16477A] to-[#071A34] p-8 text-white shadow-xl sm:p-10 md:col-span-3"
+              >
+                <div className="pointer-events-none absolute -right-12 -top-12 h-56 w-56 rounded-full bg-blue-400/10 blur-3xl" />
+                <div className="relative flex flex-col gap-7 md:flex-row md:items-center md:justify-between">
+                  <div className="max-w-3xl">
+                    <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-blue-200">
+                      <MapPin size={30} />
+                    </div>
+                    <h3 className="text-xl font-bold sm:text-2xl">
+                      Visit the School
+                    </h3>
+                    <p className="mt-3 max-w-3xl text-sm leading-7 text-white sm:text-base">
+                      {item.detail || item.fallback}
+                    </p>
+                    <p className="mt-2 text-xs leading-5 text-blue-100 sm:text-sm">
+                      {item.description}
+                    </p>
+                  </div>
+                  {item.href && (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-12 shrink-0 items-center justify-center gap-3 self-start rounded-xl bg-white px-6 py-4 text-sm font-bold text-[#123B68] transition hover:bg-blue-100"
+                    >
+                      Get Directions <ArrowUpRight size={19} />
+                    </a>
+                  )}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -353,7 +400,7 @@ export default function Contact({ setPage }) {
               School Location
             </h2>
             <p className="mt-5 max-w-md text-sm leading-7 text-slate-600 dark:text-slate-300">
-              The school's verified address and directions will appear here once confirmed.
+              Plot 13, Street 9, Sector 4, Behind Quba Mosque, HBCHS Naval Colony, Hub River Road, Karachi West, Pakistan
               Please contact the school before planning a visit.
             </p>
           </div>
@@ -369,10 +416,10 @@ export default function Contact({ setPage }) {
             />
             <div className="flex flex-wrap items-center justify-between gap-4 p-5">
               <p className="text-sm font-semibold">
-                9, Naval Colony, Karachi, 75760
+                Plot 13, Street 9, Sector 4, Behind Quba Mosque, HBCHS Naval Colony, Hub River Road, Karachi West, Pakistan
               </p>
               <a
-                href="https://www.google.com/maps?daddr=9%2C%20Naval%20Colony%2C%20Karachi%2C%2075760"
+                href="https://www.google.com/maps/dir/?api=1&destination=Plot%2013%2C%20Street%209%2C%20Sector%204%2C%20Behind%20Quba%20Mosque%2C%20HBCHS%20Naval%20Colony%2C%20Hub%20River%20Road%2C%20Karachi%20West%2C%20Pakistan"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400"

@@ -1,23 +1,25 @@
-
 import { motion, useReducedMotion } from "framer-motion";
 import { Images } from "lucide-react";
-import CampusImage from "../../assets/Tiks.jpeg";
+
+import resultImage from "../../assets/gallery/tiks-photo-015.jpeg";
+import eventImage from "../../assets/gallery/tiks-photo-002.jpeg";
+import assemblyImage from "../../assets/gallery/tiks-photo-003.jpeg";
 
 const campusPhotos = [
   {
-    src: CampusImage,
-    alt: "The Indus Karakuram School building",
-    label: "Our Campus",
+    src: resultImage,
+    alt: "Result Day at The Indus Karakuram School",
+    label: "Celebrating Achievements",
   },
   {
-    src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=85",
-    alt: "Illustrative classroom photograph",
-    label: "Learning Spaces",
+    src: eventImage,
+    alt: "School events and activities",
+    label: "School Events & Activities",
   },
   {
-    src: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=85",
-    alt: "Illustrative library photograph",
-    label: "Reading & Discovery",
+    src: assemblyImage,
+    alt: "School morning assembly",
+    label: "Morning Assembly",
   },
 ];
 
@@ -42,8 +44,8 @@ const CampusSection = ({ setPage }) => {
             </h2>
 
             <p className="mt-5 max-w-xl text-base leading-8 text-slate-600 dark:text-slate-300">
-              Explore the spaces that support
-              learning, curiosity, and personal growth.
+              Explore the spaces that support learning, curiosity,
+              and personal growth.
             </p>
           </div>
 
@@ -59,69 +61,74 @@ const CampusSection = ({ setPage }) => {
           )}
         </div>
 
-        <div className="grid gap-4 md:h-[520px] md:grid-cols-[1.65fr_1fr]">
+        <div className="grid gap-4 md:h-[456px] md:grid-cols-1">
 
           <motion.figure
-            initial={
-              reduceMotion ? false : { opacity: 0, y: 20 }
-            }
+            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.55 }}
-            className="group relative h-[340px] overflow-hidden rounded-2xl border border-slate-200 dark:border-[#526A87]/50 bg-white dark:bg-[#041225] md:h-full"
+            className="group relative h-[280px] min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-[#041225] sm:h-[360px] md:h-full"
           >
+            <img
+              src={campusPhotos[0].src}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full scale-110 object-cover blur-xl brightness-75"
+            />
             <img
               src={campusPhotos[0].src}
               alt={campusPhotos[0].alt}
               loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              className="absolute inset-0 h-full w-full object-contain object-center"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-[#041225]/90 via-transparent to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#041225]/75 via-[#0B3765]/20 to-transparent transition-opacity duration-500 group-hover:opacity-0" />
 
-            <figcaption className="absolute bottom-6 left-6 text-xl font-bold text-slate-900 dark:text-white">
+            <figcaption className="pointer-events-none absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#041225]/85 to-transparent px-6 pb-6 pt-12 text-xl font-bold text-white">
               {campusPhotos[0].label}
             </figcaption>
           </motion.figure>
 
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-1 md:grid-rows-2">
+          {/* TEMPORARILY HIDDEN: RIGHT-SIDE PHOTOS
+          <div className="grid min-h-0 gap-4 sm:grid-cols-2 md:grid-cols-1 md:grid-rows-2">
             {campusPhotos.slice(1).map((photo, index) => (
               <motion.figure
                 key={photo.label}
-                initial={
-                  reduceMotion
-                    ? false
-                    : { opacity: 0, y: 20 }
-                }
+                initial={reduceMotion ? false : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{
                   duration: 0.55,
                   delay: reduceMotion ? 0 : index * 0.1,
                 }}
-                className="group relative h-[220px] overflow-hidden rounded-2xl border border-slate-200 dark:border-[#526A87]/50 bg-white dark:bg-[#041225] sm:h-[240px] md:h-full"
+                className="group relative h-[220px] min-h-0 min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-[#041225] sm:h-[240px] md:h-full"
               >
+                <img
+                  src={photo.src}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 h-full w-full scale-110 object-cover blur-xl brightness-75"
+                />
+
                 <img
                   src={photo.src}
                   alt={photo.alt}
                   loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  className="absolute inset-0 h-full w-full object-contain object-center"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-[#041225]/90 via-transparent to-transparent" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#041225]/75 via-[#0B3765]/20 to-transparent transition-opacity duration-500 group-hover:opacity-0" />
 
-                <figcaption className="absolute bottom-5 left-5 text-lg font-bold text-slate-900 dark:text-white">
+                <figcaption className="pointer-events-none absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#041225]/85 to-transparent px-5 pb-5 pt-10 text-lg font-bold text-white">
                   {photo.label}
                 </figcaption>
               </motion.figure>
             ))}
           </div>
-        </div>
+          */}
 
-        <p className="mt-4 text-xs text-slate-600 dark:text-slate-300">
-          Classroom and library photographs are temporary
-          placeholders until actual school images are added.
-        </p>
+        </div>
       </div>
     </section>
   );

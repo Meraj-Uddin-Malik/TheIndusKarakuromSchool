@@ -1,28 +1,42 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
 import {
-  ArrowUpRight, Camera, School, BookOpen, Palette,
-  CalendarDays, Users, X, ChevronLeft, ChevronRight
+  ArrowUpRight, Camera, X, ChevronLeft, ChevronRight
 } from "lucide-react";
+
+
+const imageModules = import.meta.glob(
+  "../assets/gallery/*.{jpg,jpeg,png,webp}",
+  { eager: true, query: "?url", import: "default" }
+);
+
+const videoModules = import.meta.glob(
+  "../assets/gallery/*.{mp4,webm,mov}",
+  { eager: true, query: "?url", import: "default" }
+);
+
+const schoolImages = Object.entries(imageModules)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([, src]) => src);
+
+const schoolVideos = Object.entries(videoModules)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([, src]) => src);
+
 
 const categories = [
   { id: "all", label: "All Moments" },
-  { id: "campus", label: "Campus" },
-  { id: "classroom", label: "Classrooms" },
-  { id: "activities", label: "Activities" },
-  { id: "events", label: "Events" },
+  { id: "school", label: "School Photos" },
 ];
 
-// Add approved school photo imports and assign them to image.
-// Empty images intentionally display clearly marked placeholders.
-const photos = [
-  { id: 1, title: "A View of Our Campus", category: "campus", icon: School, image: null, size: "md:col-span-2 md:row-span-2" },
-  { id: 2, title: "Inside the Classroom", category: "classroom", icon: BookOpen, image: null, size: "" },
-  { id: 3, title: "Learning Moments", category: "classroom", icon: Users, image: null, size: "" },
-  { id: 4, title: "Creative Activities", category: "activities", icon: Palette, image: null, size: "md:row-span-2" },
-  { id: 5, title: "School Gatherings", category: "events", icon: CalendarDays, image: null, size: "md:col-span-2" },
-  { id: 6, title: "Around the School", category: "campus", icon: School, image: null, size: "" },
-];
+const photos = schoolImages.map((image, index) => ({
+  id: index + 1,
+  title: `School Moment ${String(index + 1).padStart(2, "0")}`,
+  category: "school",
+  icon: Camera,
+  image,
+  size: "",
+}));
 
 function PhotoVisual({ photo, enlarged = false }) {
   const Icon = photo.icon;
@@ -33,7 +47,7 @@ function PhotoVisual({ photo, enlarged = false }) {
         src={photo.image}
         alt={photo.title}
         loading="lazy"
-        className={`h-full w-full ${enlarged ? "object-contain" : "object-cover transition-transform duration-700 group-hover:scale-105"}`}
+        className={`h-full w-full ${enlarged ? "object-contain" : "object-contain"}`}
       />
     );
   }
@@ -138,30 +152,43 @@ export default function Gallery() {
         </div>
       </section>
 
-      {/* FEATURED PHOTO */}
+      {/* FEATURED SCHOOL PHOTO COLLAGE */}
       <section className="px-5 pt-8 sm:px-6 lg:pt-12">
         <div className="mx-auto max-w-7xl">
-          <button
-            type="button"
-            onClick={() => setSelectedId(1)}
-            className="group relative block h-[300px] w-full overflow-hidden rounded-[1.5rem] border border-white/10 text-left sm:h-[420px] lg:h-[520px]"
-          >
-            <PhotoVisual photo={photos[0]} />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-            <div className="pointer-events-none absolute bottom-0 left-0 right-0 flex flex-wrap items-end justify-between gap-4 p-6 sm:p-10">
+          <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#0B1527] p-3 sm:p-5">
+
+            <div className="mb-4 flex items-center justify-between gap-3 px-1">
               <div>
                 <span className="text-xs font-bold uppercase tracking-[0.18em] text-blue-300">
-                  Featured Frame / Campus
+                  Featured Frames / School Life
                 </span>
-                <h2 className="mt-3 text-xl font-bold sm:text-4xl">
-                  A View of Our Campus
+                <h2 className="mt-2 text-xl font-bold sm:text-3xl">
+                  Moments From Our School
                 </h2>
               </div>
-              <span className="rounded-full border border-white/30 bg-white/10 p-3">
-                <ArrowUpRight size={23} />
-              </span>
+              <Camera className="shrink-0 text-blue-400" size={25} />
             </div>
-          </button>
+
+            <div className="columns-2 gap-3 sm:columns-3 lg:columns-4">
+              {photos.slice(0, 9).map((photo) => (
+                <button
+                  key={photo.id}
+                  type="button"
+                  onClick={() => setSelectedId(photo.id)}
+                  aria-label={`View ${photo.title}`}
+                  className="group mb-3 block w-full break-inside-avoid overflow-hidden rounded-xl border border-white/10 bg-[#101E33] p-1.5 transition-colors hover:border-blue-400/60 focus-visible:outline-2 focus-visible:outline-blue-400"
+                >
+                  <img
+                    src={photo.image}
+                    alt={photo.title}
+                    loading="lazy"
+                    className="block h-auto w-full object-contain"
+                  />
+                </button>
+              ))}
+            </div>
+
+          </div>
         </div>
       </section>
 
@@ -178,8 +205,7 @@ export default function Gallery() {
               </h2>
             </div>
             <p className="max-w-sm text-sm leading-7 text-slate-400">
-              Select a category to browse the photo spaces.
-              Official school images will be added when available.
+              Browse photographs from our school collection.
             </p>
           </div>
 
@@ -238,6 +264,47 @@ export default function Gallery() {
           </div>
         </div>
       </section>
+
+
+      {/* SCHOOL VIDEO COLLECTION */}
+      {schoolVideos.length > 0 && (
+        <section className="px-5 pb-20 sm:px-6 lg:pb-28">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-8">
+              <span className="text-xs font-bold uppercase tracking-[0.18em] text-blue-400">
+                School Media
+              </span>
+              <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-4xl">
+                School Videos
+              </h2>
+              <p className="mt-3 text-sm leading-7 text-slate-400">
+                Moments captured from school life and activities.
+              </p>
+            </div>
+
+            <div className="grid gap-5 md:grid-cols-2">
+              {schoolVideos.map((src, index) => (
+                <figure
+                  key={src}
+                  className="overflow-hidden rounded-2xl border border-white/10 bg-[#0B1527]"
+                >
+                  <video
+                    src={src}
+                    controls
+                    preload="metadata"
+                    playsInline
+                    className="aspect-video w-full bg-black object-contain"
+                    aria-label={`School video ${index + 1}`}
+                  />
+                  <figcaption className="p-4 text-sm font-medium text-slate-200">
+                    School Video {String(index + 1).padStart(2, "0")}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* PHOTO VIEWER */}
       <AnimatePresence>

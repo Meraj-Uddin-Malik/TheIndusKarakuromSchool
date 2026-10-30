@@ -1,4 +1,4 @@
-import { ArrowUpRight, MapPin, Mail, ArrowUp } from "lucide-react";
+import { ArrowUpRight, MapPin, Mail, Phone, ArrowUp } from "lucide-react";
 import schoolLogo from "../../assets/Logo.png";
 
 const navigation = [
@@ -10,7 +10,7 @@ const navigation = [
   { label: "Gallery", href: "#gallery" },
 ];
 
-const Footer = () => {
+const Footer = ({ setPage }) => {
   const year = new Date().getFullYear();
 
   const goToTop = () => {
@@ -58,6 +58,11 @@ const Footer = () => {
             </p>
             <a
               href="#contact"
+              onClick={(event) => {
+                event.preventDefault();
+                setPage("contact");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
               className="mt-6 inline-flex w-fit items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-700"
             >
               Contact the School <ArrowUpRight size={17} />
@@ -82,12 +87,16 @@ const Footer = () => {
             <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-4">
               {navigation.map((item) => (
                 <li key={item.label}>
-                  <a
-                    href={item.href}
-                    className="text-sm text-slate-600 transition hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPage(item.href.slice(1));
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="text-left text-sm text-slate-600 transition hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
                   >
                     {item.label}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -99,14 +108,27 @@ const Footer = () => {
               <div className="flex items-start gap-3">
                 <MapPin size={19} className="mt-0.5 shrink-0 text-blue-600 dark:text-blue-400" />
                 <div>
-                  <p className="text-sm font-medium">Karachi, Pakistan</p>
+                  <p className="text-sm font-medium leading-6">Plot 13, Street 9, Sector 4, Behind Quba Mosque, HBCHS Naval Colony, Hub River Road, Karachi West, Pakistan</p>
                   <a
-                    href="https://www.google.com/maps?daddr=9%2C%20Naval%20Colony%2C%20Karachi%2C%2075760"
+                    href="https://www.google.com/maps/dir/?api=1&destination=Plot%2013%2C%20Street%209%2C%20Sector%204%2C%20Behind%20Quba%20Mosque%2C%20HBCHS%20Naval%20Colony%2C%20Hub%20River%20Road%2C%20Karachi%20West%2C%20Pakistan"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mt-1 inline-flex items-center gap-1 text-xs text-slate-500 transition hover:text-blue-600 dark:text-slate-400"
                   >
                     View directions <ArrowUpRight size={13} />
+                  </a>
+                </div>
+              </div>
+
+
+              <div className="flex items-start gap-3">
+                <Phone size={19} className="mt-0.5 shrink-0 text-blue-600 dark:text-blue-400" />
+                <div className="flex flex-col gap-2">
+                  <a href="tel:+923142956202" className="text-sm font-medium transition hover:text-blue-600 dark:hover:text-blue-400">
+                    0314 2956202
+                  </a>
+                  <a href="tel:+923391148900" className="text-sm font-medium transition hover:text-blue-600 dark:hover:text-blue-400">
+                    0339 1148900
                   </a>
                 </div>
               </div>
@@ -117,6 +139,11 @@ const Footer = () => {
                   <p className="text-sm font-medium">Have a question?</p>
                   <a
                     href="#contact"
+              onClick={(event) => {
+                event.preventDefault();
+                setPage("contact");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
                     className="mt-1 inline-block text-xs text-slate-500 transition hover:text-blue-600 dark:text-slate-400"
                   >
                     Visit our Contact page

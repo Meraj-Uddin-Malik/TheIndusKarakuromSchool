@@ -145,7 +145,7 @@ export default function App() {
             </main>
 
             {/* FOOTER */}
-            <Footer />
+            <Footer setPage={navigateToPage} />
           </>
         )}
       </div>
